@@ -12,9 +12,6 @@ import { Services } from './main/nested/services/services';
 import { About } from './main/nested/about/about';
 
 const routes: RouteObject[] = [
-
-  
-  
   {
     path: "/home",
     element: <Home />,

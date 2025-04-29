@@ -19,66 +19,59 @@ export const UserLogin = () => {
   };
 
   return (
-    <div className="w-full h-screen flex">
-      <div className="w-1/2 h-full">{/* Espaço para imagem futura */}</div>
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-auto space-y-6">
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-center text-black">
-            Login para Clientes
-          </h2>
+    <>
+      <h2 className="text-3xl font-bold mb-2">Login - Usuário</h2>
+      <p className="mb-8 text-lg">Bem vindo!</p>
 
-          <form onSubmit={handleSubmit} className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8">
-            <div>
-              <label htmlFor="email" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                placeholder="Digite seu email"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-3 text-base sm:text-lg md:text-lg text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Senha
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                placeholder="Digite sua senha"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-3 text-base sm:text-lg md:text-lg text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-[#0D2C40] text-white py-2 sm:py-3 md:py-4 text-lg sm:text-xl md:text-2xl font-bold rounded-lg hover:bg-[#1D4A7C] transition duration-300 ease-in-out"
-            >
-              Entrar
-            </button>
-          </form>
-
-          <p className="text-lg sm:text-xl md:text-2xl text-center text-black">
-            Esqueceu sua senha?{' '}
-            <a
-              href="/auth/reset-password"
-              className="text-lg sm:text-xl md:text-2xl text-[#0D2C40] hover:underline transition duration-300 ease-in-out"
-            >
-              Clique Aqui
-            </a>
-          </p>
+      <form onSubmit={handleSubmit}>
+      <div className="mb-6 relative">
+        <input
+          type="email"
+          id="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full p-4 pl-12 border-b border-gray-300 rounded-none text-lg focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Endereço de email"
+          required
+        />
+        <div className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M20 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM20 8L12 13L4 8V6L12 11L20 6V8Z" fill="currentColor" />
+          </svg>
         </div>
       </div>
-    </div>
+
+      <div className="mb-8 relative">
+        <input
+          type="password"
+          id="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full p-4 pl-12 border-b border-gray-300 rounded-none text-lg focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
+          placeholder="Senha"
+          required
+        />
+        <div className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 8H17V6C17 3.24 14.76 1 12 1C9.24 1 7 3.24 7 6V8H6C4.9 8 4 8.9 4 10V20C4 21.1 4.9 22 6 22H18C19.1 22 20 21.1 20 20V10C20 8.9 19.1 8 18 8ZM12 17C10.9 17 10 16.1 10 15C10 13.9 10.9 13 12 13C13.1 13 14 13.9 14 15C14 16.1 13.1 17 12 17ZM15 8H9V6C9 4.34 10.34 3 12 3C13.66 3 15 4.34 15 6V8Z" fill="currentColor" />
+          </svg>
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+        >
+        Entrar
+      </button>
+    </form>
+
+
+      <p className="mt-6 text-center text-blue-500 text-md">
+        <a href="/auth/reset-password" className="hover:underline">
+            Esqueceu sua senha?
+          </a>
+      </p>
+    </>
   );
 };

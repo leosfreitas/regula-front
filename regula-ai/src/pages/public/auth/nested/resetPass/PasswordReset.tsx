@@ -35,65 +35,50 @@ export const PasswordReset = () => {
   };
 
   return (
-    <div className="w-full h-screen flex">
-      <div className="w-1/2 h-full">{/* Espaço para imagem futura */}</div>
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="rounded-xl shadow-lg p-4 sm:p-6 md:p-8 w-full max-w-[300px] sm:max-w-[400px] md:max-w-[500px] h-auto flex flex-col items-center space-y-6">
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-center text-black">
-            Redefinir Senha
-          </h2>
+    <>
+      <h2 className="text-3xl font-bold mb-2">Redefinir Senha</h2>
+      <p className="mb-8 text-lg">Crie uma nova senha para sua conta</p>
 
-          <form
-            onSubmit={handleSubmit}
-            className="w-full flex flex-col space-y-4 sm:space-y-6 md:space-y-8"
-          >
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-lg sm:text-xl md:text-2xl font-semibold text-black"
-              >
-                Nova Senha
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="Digite sua nova senha"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-3 text-base sm:text-lg md:text-lg text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-lg sm:text-xl md:text-2xl font-semibold text-black"
-              >
-                Confirmar Nova Senha
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="Confirme sua nova senha"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-3 text-base sm:text-lg md:text-lg text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full bg-[#0D2C40] text-white py-2 sm:py-3 md:py-4 text-lg sm:text-xl md:text-2xl font-bold rounded-lg hover:bg-[#1D4A7C] transition duration-300 ease-in-out"
-            >
-              Redefinir Senha
-            </button>
-          </form>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-6">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            placeholder="Nova senha"
+            required
+            className="w-full p-4 pl-2 border-b border-gray-300 rounded-none text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+          />
         </div>
-      </div>
-    </div>
+
+        <div className="mb-8">
+          <input
+            id="confirmPassword"
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            placeholder="Confirmar nova senha"
+            required
+            className="w-full p-4 pl-2 border-b border-gray-300 rounded-none text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+        >
+          Redefinir Senha
+        </button>
+      </form>
+
+      <p className="mt-6 text-center text-blue-500 text-md">
+        <a href="/auth/select" className="hover:underline">
+          Voltar ao login
+        </a>
+      </p>
+    </>
   );
 };

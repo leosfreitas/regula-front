@@ -16,9 +16,36 @@ export const UserRegister = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const formatCPF = (value: string) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  };
+
+  const formatPhone = (value: string) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{2})(\d)/, "($1) $2")
+      .replace(/(\d{5})(\d)/, "$1-$2")
+      .slice(0, 15);
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+
+    let newValue = value;
+
+    if (name === "cpf") {
+      newValue = formatCPF(value);
+    }
+
+    if (name === "phone") {
+      newValue = formatPhone(value);
+    }
+
+    setFormData((prevData) => ({ ...prevData, [name]: newValue }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -55,133 +82,95 @@ export const UserRegister = () => {
   };
 
   return (
-    <div className="w-full h-screen flex">
-      <div className="w-1/2 h-full">{/* Aqui você pode colocar uma imagem depois */}</div>
-      <div className="w-1/2 flex items-center justify-center">
-        <div className="rounded-xl shadow-lg p-4 sm:p-6 md:p-8 lg:p-10 w-full max-w-[300px] sm:max-w-[400px] md:max-w-[600px] lg:max-w-[700px] h-auto space-y-6">
-          <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 md:gap-8"
-          >
-            <div className="col-span-2 text-center">
-              <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold text-black mb-4">
-                Cadastro de Usuário
-              </h2>
-            </div>
+    <>
+      <h2 className="text-3xl font-bold mb-8 text-center">Cadastro de Usuário</h2>
 
-            {/* Campo Nome */}
-            <div>
-              <label htmlFor="name" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Nome Completo
-              </label>
-              <input
-                id="name"
-                name="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-                required
-                placeholder="Digite seu nome"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full"
+      >
+        {/* Nome */}
+        <input
+          id="name"
+          name="name"
+          type="text"
+          value={formData.name}
+          onChange={handleChange}
+          required
+          placeholder="Nome Completo"
+          className="w-full p-5 pl-2 border-b border-gray-300 rounded-none text-lg placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+        />
 
-            {/* Campo Email */}
-            <div>
-              <label htmlFor="email" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                required
-                placeholder="Digite seu email"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
+        {/* Email */}
+        <input
+          id="email"
+          name="email"
+          type="email"
+          value={formData.email}
+          onChange={handleChange}
+          required
+          placeholder="Email"
+          className="w-full p-5 pl-2 border-b border-gray-300 rounded-none text-lg placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+        />
 
-            {/* Campo CPF */}
-            <div>
-              <label htmlFor="cpf" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                CPF
-              </label>
-              <input
-                id="cpf"
-                name="cpf"
-                type="text"
-                value={formData.cpf}
-                onChange={handleChange}
-                required
-                placeholder="Digite seu CPF"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
+        {/* CPF */}
+        <input
+          id="cpf"
+          name="cpf"
+          type="text"
+          value={formData.cpf}
+          onChange={handleChange}
+          required
+          placeholder="CPF"
+          className="w-full p-5 pl-2 border-b border-gray-300 rounded-none text-lg placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+        />
 
-            {/* Campo Telefone */}
-            <div>
-              <label htmlFor="phone" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Telefone
-              </label>
-              <input
-                id="phone"
-                name="phone"
-                type="text"
-                value={formData.phone}
-                onChange={handleChange}
-                required
-                placeholder="Digite seu telefone"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
+        {/* Telefone */}
+        <input
+          id="phone"
+          name="phone"
+          type="text"
+          value={formData.phone}
+          onChange={handleChange}
+          required
+          placeholder="Telefone"
+          className="w-full p-5 pl-2 border-b border-gray-300 rounded-none text-lg placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+        />
 
-            {/* Campo Senha */}
-            <div>
-              <label htmlFor="password" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Senha
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                placeholder="Digite sua senha"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
+        {/* Senha */}
+        <input
+          id="password"
+          name="password"
+          type="password"
+          value={formData.password}
+          onChange={handleChange}
+          required
+          placeholder="Senha"
+          className="w-full p-5 pl-2 border-b border-gray-300 rounded-none text-lg placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+        />
 
-            {/* Campo Confirmar Senha */}
-            <div>
-              <label htmlFor="confirmPassword" className="block text-lg sm:text-xl md:text-2xl font-semibold text-black">
-                Confirmar Senha
-              </label>
-              <input
-                id="confirmPassword"
-                name="confirmPassword"
-                type="password"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                placeholder="Digite novamente sua senha"
-                className="w-full mt-2 rounded-lg border border-gray-300 px-4 py-2 sm:py-3 md:py-4 text-base sm:text-lg md:text-xl text-gray-800 placeholder-gray-500 focus:border-blue-500 focus:ring focus:ring-blue-200"
-              />
-            </div>
+        {/* Confirmar Senha */}
+        <input
+          id="confirmPassword"
+          name="confirmPassword"
+          type="password"
+          value={formData.confirmPassword}
+          onChange={handleChange}
+          required
+          placeholder="Confirmar Senha"
+          className="w-full p-5 pl-2 border-b border-gray-300 rounded-none text-lg placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
+        />
 
-            {/* Botão de Cadastro */}
-            <div className="col-span-2">
-              <button
-                className="w-full bg-[#0D2C40] text-white py-2 sm:py-3 md:py-4 lg:py-5 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold rounded-lg hover:bg-[#1D4A7C] transition duration-300 ease-in-out"
-              >
-                Cadastrar
-              </button>
-            </div>
-          </form>
+        {/* Botão */}
+        <div className="col-span-1 sm:col-span-2 mt-6">
+          <button
+            type="submit"
+            className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+            >
+            Cadastrar
+          </button>
         </div>
-      </div>
-    </div>
+      </form>
+    </>
   );
 };
