@@ -7,7 +7,6 @@ import { Menu } from './components/menu';
 
 import { Home } from './nested/home/homepage';
 import { Profile } from './nested/profile/profile';
-import { Users } from './nested/users/users';
 
 export const Dashboard = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -24,7 +23,6 @@ export const Dashboard = () => {
 
             <Routes>
                 <Route path="home" element={<Home />}/>
-                <Route path="users" element={<Users />}/>
                 <Route path="profile" element={<Profile />}/>
             </Routes>
         </DashboardStyles>
