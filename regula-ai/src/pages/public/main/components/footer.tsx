@@ -1,67 +1,79 @@
+import { MapPin } from "lucide-react";
+
 export const Footer = () => {
   return (
-    <footer className="bg-[#0D2C40] text-white py-16 md:py-20">
-      <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-5 gap-12 px-8 md:px-0">
-        {/* Regula.ai Section */}
-        <div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-8">Regula.ai</h3>
-          <p className="text-base md:text-xl leading-relaxed">
-            A Regula.ai é uma startup de inteligência artificial focada em automatizar a regulação de sinistros. 
-            Usamos tecnologia de ponta para garantir mais agilidade, precisão e segurança para seguradoras e seus clientes.
-          </p>
-        </div>
+    <footer className="bg-[#003666] text-white py-8 bottom-0">
+      <div className="max-w mx-10 px-4 md:px-8">
+        <img src="RegulaAI.png" alt="Logo Regula.ai" className="w-64 mb-8" />
 
-        {/* Contato Section */}
-        <div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-8">Entre em Contato</h3>
-          <p className="text-base md:text-xl">+55 11 99999-1234</p>
-          <p className="text-base md:text-xl">contato@regula.ai</p>
-        </div>
+        <div className="h-[1px] bg-slate-400 mt-5"></div>
 
-        {/* Sede Section */}
-        <div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-8">Localização</h3>
-          <p className="text-base md:text-xl">
-            Escritório localizado em São Paulo, SP
-          </p>
-        </div>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+          <div>
+            <h4 className="uppercase font-semibold text-s mb-4">PÁGINAS</h4>
+            <ul className="space-y-4 mt-7">
+              <li><a href="#" className="hover:underline">Home</a></li>
+              <li><a href="#" className="hover:underline">Sobre</a></li>
+              <li><a href="#" className="hover:underline">Serviços</a></li>
+              <li><a href="#" className="hover:underline">Contato</a></li>
 
-        {/* Soluções Section */}
-        <div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-8">Nossas Soluções</h3>
-          <ul className="text-base md:text-xl space-y-6">
-            <li>Automação de sinistros</li>
-            <li>Regulação com IA</li>
-            <li>Plataforma SaaS</li>
-            <li>Segurança jurídica</li>
-          </ul>
-        </div>
+                <div className="flex items-center gap-2 text-gray-200 mt-12 mb-3 ml-[-4px]">
+                  <MapPin size={28} className="text-gray-200"/>
+                  <span className="text-l">Rua Quatá - 200 - Vila Olímpia - São Paulo/SP</span>
+                </div>
+                
+            </ul>
+          </div>
 
-        {/* Privacidade Section */}
-        <div>
-          <h3 className="text-2xl md:text-3xl font-bold mb-8">Privacidade</h3>
-          <ul className="text-base md:text-xl space-y-6">
-            <li>
-              <a href="#" className="hover:underline">
-                Termos de Uso
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Centro de Privacidade
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:underline">
-                Política de Privacidade
-              </a>
-            </li>
-          </ul>
-        </div>
-      </div>
+          <div>
+            <h4 className="uppercase font-semibold text-s mb-4">LINKS ÚTEIS</h4>
+            <ul className="space-y-4 mt-7">
+              <li><a href="#" className="hover:underline">Área do cliente</a></li>
+              <li><a href="#" className="hover:underline">Receita Federal</a></li>
+              <li><a href="#" className="hover:underline">LGPD</a></li>
+              <li><a href="#" className="hover:underline">Guarda de Documentos</a></li>
+            </ul>
+          </div>
 
-      <div className="text-center text-sm md:text-xl text-gray-400 mt-16 md:mt-20">
-        © 2025 Regula.ai | Todos os direitos reservados
+          <div>
+            <h4 className="uppercase font-semibold text-s mb-4">LINKS ÚTEIS</h4>
+            <ul className="space-y-4 mt-7">
+              <li><a href="#" className="hover:underline">SUSEP</a></li>
+              <li><a href="#" className="hover:underline">CNSeg</a></li>
+              <li><a href="#" className="hover:underline">ANS</a></li>
+              <li><a href="#" className="hover:underline">Denatran</a></li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="uppercase font-semibold text-s mb-4">ENTRE EM CONTATO</h4>
+            <form className="space-y-8">
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full h-12 p-2 text-black bg-white focus:outline-none border-2 border-gray-400"
+              />
+              <textarea
+                placeholder="Mensagem"
+                rows={4}
+                className="w-full p-2 h-22 text-black bg-white focus:outline-none border-2 border-gray-400 resize-none"
+              ></textarea>
+              <div className="flex justify-end">
+                <button
+                  type="submit"
+                  className="bg-[#d18c00] text-white px-7 py-2 font-semibold hover:bg-[#b37700] transition duration-300 cursor-pointer"
+                >
+                  Enviar
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+        <div className="h-[1px] bg-slate-400 mt-5"></div>
+        <div className="max-w-screen-xl mt-7">
+          Regula.ai © 2025. Todos os direitos reservados
+        </div>
       </div>
     </footer>
   );
