@@ -10,9 +10,5 @@ export const headerItems = [
     {
         label: 'Serviços',
         href: '/services',
-    },
-    {
-        label: 'Contato',
-        href: '/contact',
-    },
+    }
 ];

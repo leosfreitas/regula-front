@@ -10,7 +10,10 @@ export const Header = () => {
   return (
     <HeaderStyles>
       <div className="header-container">
-        {/* MENU DESKTOP */}
+        <Link to="/home" className="logo">
+          <img src="RegulaAI.png" alt="Logo Regula.ai" className="w-64" />
+        </Link>
+
         <nav className="nav-desktop">
           {headerItems.map((item) => (
             <Link
@@ -23,18 +26,17 @@ export const Header = () => {
           ))}
         </nav>
 
-        {/* HAMBÚRGUER (somente mobile) */}
-        <button
-          className="hamburger md:hidden"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
+        <Link to="/auth/select" className="login-button">
+          Login
+        </Link>
+
+        <button className="hamburger md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
           <svg className="w-7 h-7 text-white" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
           </svg>
         </button>
       </div>
 
-      {/* MENU MOBILE */}
       {isMobileMenuOpen && (
         <div className="mobile-menu md:hidden">
           <nav className="mobile-links">
@@ -48,6 +50,9 @@ export const Header = () => {
                 {item.label}
               </Link>
             ))}
+            <Link to="/auth/select" className="mobile-nav-link" onClick={() => setIsMobileMenuOpen(false)}>
+              Login
+            </Link>
           </nav>
         </div>
       )}
@@ -55,41 +60,71 @@ export const Header = () => {
   );
 };
 
+
 const HeaderStyles = styled.header`
   position: fixed;
-  top: 0;
+  top: 2%;
   left: 0;
   width: 100%;
   z-index: 99999;
-  padding: 22px 0;
+  padding: 20px 0;
   background-color: transparent;
 
   .header-container {
-    background-color: #0d2c40;
-    border-radius: 50px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 24px 36px;
-    width: 90%;
-    max-width: 1600px;
+    max-width: 95%;
     margin: 0 auto;
+  }
+
+  .logo {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+
+    img {
+      max-width: 240px;
+      height: auto;
+    }
   }
 
   .nav-desktop {
     display: flex;
-    gap: 56px;
+    align-items: center;
+    gap: 64px;
 
     .nav-link {
       color: white;
-      font-size: 30px;
-      font-weight: 800;
+      font-size: 24px;
+      font-weight: 700;
       text-decoration: none;
       transition: all 0.3s ease;
 
       &.active {
         color: #4fc3f7;
       }
+    }
+
+    @media (max-width: 768px) {
+      display: none;
+    }
+  }
+
+  .login-button {
+    margin-left: 48px;
+    background: none;
+    border: 2px solid #ffffffaa;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 9999px;
+    font-weight: 700;
+    font-size: 18px;
+    text-decoration: none;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background: #ffffff22;
     }
 
     @media (max-width: 768px) {
@@ -122,13 +157,13 @@ const HeaderStyles = styled.header`
   .mobile-links {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
     width: 100%;
     align-items: center;
 
     .mobile-nav-link {
       color: white;
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
       text-decoration: none;
       transition: all 0.3s ease;
@@ -139,3 +174,4 @@ const HeaderStyles = styled.header`
     }
   }
 `;
+
