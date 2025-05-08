@@ -3,7 +3,7 @@ import { Header } from './components/header';
 import styled from 'styled-components';
 import { Home } from './nested/home/home';
 import { About } from './nested/about/about';
-import { Services } from './nested/services/services';
+import { Contact } from './nested/contact/contact';
 
 export const Public = () => {
     return (
@@ -13,7 +13,7 @@ export const Public = () => {
                 <Routes>
                     <Route path="home" element={<Home />} />
                     <Route path="about" element={<About />} />
-                    <Route path="services" element={<Services />} />
+                    <Route path="contact" element={<Contact />} />
                 </Routes>
             </main>
         </PublicStyles>

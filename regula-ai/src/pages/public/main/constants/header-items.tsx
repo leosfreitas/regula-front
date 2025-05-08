@@ -8,7 +8,7 @@ export const headerItems = [
         href: '/about',
     },
     {
-        label: 'Serviços',
-        href: '/services',
+        label: 'Contato',
+        href: '/contact',
     }
 ];

@@ -1,6 +1,5 @@
 import { Header } from "../../components/header";
 import { Footer } from "../../components/footer";
-import { Faq } from "./faq";
 
 export const Home = () => {
   return (
@@ -90,7 +89,37 @@ export const Home = () => {
           </div>
         </div>
       </section>
-      <Faq />
+          
+    
+      <section className="py-16 px-6 md:px-24 bg-gray-50">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold mb-8">Perguntas Frequentes</h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-md text-left">
+              <h3 className="text-xl font-bold mb-3">Como a Regula.ai pode ajudar minha empresa?</h3>
+              <p className="text-gray-700">Nossa solução de IA automatiza o processo de regulação de sinistros, reduzindo custos operacionais e acelerando o atendimento ao cliente.</p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md text-left">
+              <h3 className="text-xl font-bold mb-3">Quanto tempo leva para implementar a solução?</h3>
+              <p className="text-gray-700">O processo de implementação geralmente leva de 4 a 6 semanas, dependendo da complexidade e tamanho da sua operação.</p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md text-left">
+              <h3 className="text-xl font-bold mb-3">A solução é compatível com nossos sistemas atuais?</h3>
+              <p className="text-gray-700">Sim, desenvolvemos integrações personalizadas com os principais sistemas de gestão de seguros do mercado.</p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md text-left">
+              <h3 className="text-xl font-bold mb-3">Como é feito o suporte técnico?</h3>
+              <p className="text-gray-700">Oferecemos suporte técnico 24/7 via chat, e-mail e telefone, com garantia de resposta em até 2 horas para casos críticos.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
       <Footer />
     </>
   );

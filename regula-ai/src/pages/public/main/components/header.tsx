@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { headerItems } from "../constants/header-items";
@@ -6,9 +6,26 @@ import { headerItems } from "../constants/header-items";
 export const Header = () => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <HeaderStyles>
+    <HeaderStyles isScrolled={isScrolled}>
       <div className="header-container">
         <Link to="/home" className="logo">
           <img src="RegulaAI.png" alt="Logo Regula.ai" className="w-64" />
@@ -61,14 +78,33 @@ export const Header = () => {
 };
 
 
-const HeaderStyles = styled.header`
+interface HeaderStylesProps {
+  isScrolled: boolean;
+}
+
+const HeaderStyles = styled.header<HeaderStylesProps>`
   position: fixed;
-  top: 2%;
+  top: 0;
   left: 0;
   width: 100%;
   z-index: 99999;
   padding: 20px 0;
-  background-color: transparent;
+  transition: all 0.3s ease;
+  
+  /* Apply background blur effect when scrolled */
+  ${props => props.isScrolled && `
+    background-color: rgba(0, 0, 0, 0.5); 
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  `}
+
+  /* When not scrolled - fully transparent */
+  ${props => !props.isScrolled && `
+    background-color: transparent;
+    box-shadow: none;
+    top: 2%;
+  `}
 
   .header-container {
     display: flex;
@@ -86,6 +122,10 @@ const HeaderStyles = styled.header`
     img {
       max-width: 240px;
       height: auto;
+      transition: all 0.3s ease;
+      ${props => props.isScrolled && `
+        max-width: 200px; /* Slightly smaller logo when scrolled */
+      `}
     }
   }
 
@@ -104,6 +144,10 @@ const HeaderStyles = styled.header`
       &.active {
         color: #4fc3f7;
       }
+
+      ${props => props.isScrolled && `
+        font-size: 20px; /* Slightly smaller text when scrolled */
+      `}
     }
 
     @media (max-width: 768px) {
@@ -121,11 +165,16 @@ const HeaderStyles = styled.header`
     font-weight: 700;
     font-size: 18px;
     text-decoration: none;
-    transition: background 0.3s ease;
+    transition: all 0.3s ease;
 
     &:hover {
       background: #ffffff22;
     }
+
+    ${props => props.isScrolled && `
+      padding: 10px 24px; /* Slightly smaller button when scrolled */
+      font-size: 16px;
+    `}
 
     @media (max-width: 768px) {
       display: none;
@@ -152,6 +201,12 @@ const HeaderStyles = styled.header`
     display: flex;
     flex-direction: column;
     align-items: center;
+    
+    ${props => props.isScrolled && `
+      background-color: rgba(13, 44, 64, 0.9);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    `}  
   }
 
   .mobile-links {
@@ -171,7 +226,10 @@ const HeaderStyles = styled.header`
       &.active {
         color: #4fc3f7;
       }
+      
+      ${props => props.isScrolled && `
+        font-size: 20px; /* Slightly smaller text when scrolled */
+      `}
     }
   }
 `;
-

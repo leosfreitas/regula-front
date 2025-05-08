@@ -7,7 +7,7 @@ import { UserRegister } from './auth/nested/userRegister/register';
 import { RequestPasswordReset } from './auth/nested/resetPass/RequestPasswordReset';
 import { PasswordReset } from './auth/nested/resetPass/PasswordReset';
 import { Home } from './main/nested/home/home';
-import { Services } from './main/nested/services/services';
+import { Contact } from './main/nested/contact/contact';
 import { About } from './main/nested/about/about';
 
 const routes: RouteObject[] = [
@@ -16,8 +16,8 @@ const routes: RouteObject[] = [
     element: <Home />,
   },
   {
-    path: "/services",
-    element: <Services />,
+    path: "/contact",
+    element: <Contact />,
   },
   {
     path: "/about",
