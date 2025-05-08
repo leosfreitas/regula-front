@@ -14,9 +14,9 @@ export const Profile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
-    document.body.style.overflow = "hidden"; // Bloqueia o scroll da página inteira
+    document.body.style.overflow = "hidden";
     return () => {
-      document.body.style.overflow = "auto"; // Restaura quando o componente desmontar
+      document.body.style.overflow = "auto"; 
     };
   }, []);
 
