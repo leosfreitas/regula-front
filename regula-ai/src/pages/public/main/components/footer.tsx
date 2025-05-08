@@ -47,7 +47,7 @@ export const Footer = () => {
 
           <div>
             <h4 className="uppercase font-semibold text-s mb-4">ENTRE EM CONTATO</h4>
-            <form className="space-y-8">
+            <form className="space-y-6">
               <input
                 type="email"
                 placeholder="Email"
@@ -61,7 +61,7 @@ export const Footer = () => {
               <div className="flex justify-end">
                 <button
                   type="submit"
-                  className="bg-[#d18c00] text-white px-7 py-2 font-semibold hover:bg-[#b37700] transition duration-300 cursor-pointer"
+                  className="bg-[#d18c00] text-white px-7 py-2 font-semibold hover:bg-[#b37700] transition duration-300 cursor-pointer rounded-sm"
                 >
                   Enviar
                 </button>

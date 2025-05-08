@@ -30,7 +30,7 @@ export const AdminLogin = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Endereço de email"
+            placeholder="Endereço de e-mail"
             required
             className="w-full p-4 pl-2 border-b border-gray-300 rounded-none text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
           />
@@ -50,7 +50,7 @@ export const AdminLogin = () => {
 
         <button
           type="submit"
-          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
           >
           Entrar
         </button>
