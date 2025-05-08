@@ -1,6 +1,7 @@
 import { Header } from "../../components/header";
 import { Footer } from "../../components/footer";
 import { useState } from "react";
+import { createContact } from "./api/contact";
 
 export const Contact = () => {
   const [formData, setFormData] = useState({
@@ -23,11 +24,12 @@ export const Contact = () => {
     setLoading(true);
     
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await createContact(formData);
       setSubmitted(true);
       setFormData({ nome: "", email: "", telefone: "", empresa: "", mensagem: "" });
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
+      alert("Erro ao enviar o formulário. Tente novamente.");
     } finally {
       setLoading(false);
     }
