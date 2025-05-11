@@ -4,6 +4,7 @@ import { checkToken } from './auth/token/api/CheckToken';
 import { Home } from './dashboard/nested/home/homepage';
 import { Profile } from './dashboard/nested/profile/profile';
 import { Users } from './dashboard/nested/users/users';
+import { Contact } from './dashboard/nested/contact/contact';
 
 const routes: RouteObject[] = [
   {
@@ -37,6 +38,11 @@ const routes: RouteObject[] = [
         path: "profile",
         element: <Profile />,
         id: "admin-profile",
+      },
+      {
+        path: "contact",
+        element: <Contact />,
+        id: "admin-contact",
       }
     ],
   },

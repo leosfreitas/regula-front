@@ -13,7 +13,6 @@ export interface Sinistro {
 
 export interface CreateSinistroDTO {
   cnh: string;
-  cpf: string;
   endereco: string;
   data_acidente: string; // ISO format date string
   descricao: string;
@@ -43,6 +42,7 @@ export async function createSinistro(
   const { apiBaseUrl } = config;
   const requestRoute = "/user/sinistro/create";
 
+  // O back-end agora não espera o campo cpf, então enviamos apenas os campos necessários
   const options = {
     method: "POST",
     headers: {
@@ -63,29 +63,28 @@ export async function createSinistro(
 }
 
 export async function deleteSinistro(
-    sinistroId: string
-  ): Promise<{ response: Response; responseData: any }> {
-    const { apiBaseUrl } = config;
-    const requestRoute = `/user/sinistro/delete/${sinistroId}`;
+  sinistroId: string
+): Promise<{ response: Response; responseData: any }> {
+  const { apiBaseUrl } = config;
+  const requestRoute = `/user/sinistro/delete/${sinistroId}`;
+
+  const options = {
+    method: "DELETE",
+    credentials: "include" as RequestCredentials,
+  };
+
+  const response = await fetch(apiBaseUrl + requestRoute, options);
   
-    const options = {
-      method: "DELETE",
-      credentials: "include" as RequestCredentials,
-    };
-  
-    const response = await fetch(apiBaseUrl + requestRoute, options);
-    
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.message || "Erro ao excluir sinistro");
-    }
-  
-    let responseData = null;
-    if (response.status !== 204) {
-      responseData = await response.json().catch(() => null);
-    }
-  
-    console.log("Sinistro excluído com sucesso:", responseData);
-    return { response, responseData };
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Erro ao excluir sinistro");
   }
-  
+
+  let responseData = null;
+  if (response.status !== 204) {
+    responseData = await response.json().catch(() => null);
+  }
+
+  console.log("Sinistro excluído com sucesso:", responseData);
+  return { response, responseData };
+}

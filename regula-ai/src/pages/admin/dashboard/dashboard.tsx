@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Route, Routes } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Header } from './components/header';
@@ -8,57 +8,97 @@ import { Menu } from './components/menu';
 import { Home } from './nested/home/homepage';
 import { Profile } from './nested/profile/profile';
 import { Users } from './nested/users/users';
+import { Contact } from './nested/contact/contact';
 
 export const Dashboard = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const location = useLocation();
+
+    // Fechamento automático do menu mobile quando a rota muda
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            setIsMobileMenuOpen(false);
+        }
+    }, [location.pathname]);
 
     const toggleMobileMenu = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
+    // Fecha o menu quando clica fora dele (em telas mobile)
+    const handleContentClick = () => {
+        if (isMobileMenuOpen && window.innerWidth <= 768) {
+            setIsMobileMenuOpen(false);
+        }
+    };
+
     return (
-        <DashboardStyles>
-            <Header onToggleMenu={toggleMobileMenu} />
+        <>
+            {/* Overlay para telas mobile quando o menu está aberto */}
+            {isMobileMenuOpen && window.innerWidth <= 768 && (
+                <Overlay onClick={() => setIsMobileMenuOpen(false)} />
+            )}
 
-            <Menu isMobileMenuOpen={isMobileMenuOpen} />
-
-            <Routes>
-                <Route path="home" element={<Home />}/>
-                <Route path="users" element={<Users />}/>
-                <Route path="profile" element={<Profile />}/>
-            </Routes>
-        </DashboardStyles>
-    )
-}
+            <DashboardStyles>
+                <Menu isMobileMenuOpen={isMobileMenuOpen} />
+                
+                <MainContent>
+                    <Header onToggleMenu={toggleMobileMenu} />
+                    
+                    <ContentArea onClick={handleContentClick}>
+                        <Routes>
+                            <Route path="home" element={<Home />} />
+                            <Route path="users" element={<Users />} />
+                            <Route path="profile" element={<Profile />} />
+                            <Route path="contact" element={<Contact />} />
+                        </Routes>
+                    </ContentArea>
+                </MainContent>
+            </DashboardStyles>
+        </>
+    );
+};
 
 const DashboardStyles = styled.div`
     display: grid;
-    grid-template-columns: 35vh 1fr;
-    grid-template-rows: 15vh 1fr;
-
-    /* Faz o background ocupar pelo menos a altura da tela em desktops */
+    grid-template-columns: 260px 1fr;
     min-height: 100vh;
-    width: 100vw;
-    background-color: #eff3f7;
-
-    /* Se quiser manter o max-height no desktop, coloque num @media (min-width) */
-    @media (min-width: 1024px) {
-        /* Mantém em desktops grandes a altura travada, se for desejado */
-        max-height: 100vh;
-    }
-
-    /* Em telas menores, deixa a altura livre para crescer além de 100vh */
-    @media (max-width: 1024px) {
-        max-height: none;
-    }
+    max-height: 100vh;
+    width: 100%;
+    background-color: #f5f7fa;
+    position: relative;
+    overflow: hidden;
 
     @media (max-width: 768px) {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
-    }
-
-    @media (max-width: 480px) {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
     }
 `;
+
+const MainContent = styled.div`
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+`;
+
+const ContentArea = styled.main`
+    padding: 25px;
+    overflow-y: auto;
+    height: calc(100vh - 80px); /* 80px é a altura do Header */
+    
+    @media (max-width: 768px) {
+        padding: 16px;
+        height: calc(100vh - 70px);
+    }
+`;
+
+const Overlay = styled.div`
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+`;
+
+export default Dashboard;

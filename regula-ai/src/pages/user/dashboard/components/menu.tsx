@@ -3,14 +3,15 @@ import styled from "styled-components";
 import { logout } from "../../auth/logout/api/logout";
 import { SignOut } from '@phosphor-icons/react';
 import { toast } from "react-hot-toast";
-import { CardsThree } from "@phosphor-icons/react";
+import { useLocation } from "react-router-dom";
 
-// Tipagem para receber se o menu está aberto ou não
 interface MenuProps {
   isMobileMenuOpen?: boolean;
 }
 
 export const Menu = ({ isMobileMenuOpen }: MenuProps) => {
+  const location = useLocation();
+  
   const handleLogout = async () => {
     try {
       toast.loading("Realizando logout...");
@@ -25,37 +26,38 @@ export const Menu = ({ isMobileMenuOpen }: MenuProps) => {
     }
   };
 
-  const goToHome = () => {
-    window.location.href = "/home"; // Redireciona para a home sem deslogar
+  const isActiveRoute = (href: string) => {
+    return location.pathname === href;
   };
 
   return (
     <MenuStyles isOpen={isMobileMenuOpen}>
-      <span>
-        <img src="/RegulaAI.png" alt="Logo Regula AI" width={200} height={100} className="mb-7 mt-7 ml-3" />
-      </span>
+      <div className="logo-container">
+        <img src="/RegulaAI.png" alt="Logo Regula AI" width={180} height={50} />
+      </div>
 
-      {/* Links de Menu */}
-      {menuItems.map((item, index) => (
-        <a key={index} href={item.href}>
-          {item.icon}
-          {item.label}
-        </a>
-      ))}
+      <div className="menu-items">
+        {menuItems.map((item, index) => (
+          <a 
+            key={index} 
+            href={item.href} 
+            className={isActiveRoute(item.href) ? "active" : ""}
+          >
+            <span className="icon-container">{item.icon}</span>
+            <span className="label">{item.label}</span>
+            {isActiveRoute(item.href) && <div className="active-indicator" />}
+          </a>
+        ))}
+      </div>
 
-      <div className="spacer"></div> {/* Espaçador para empurrar os botões para o final */}
+      <div className="spacer"></div>
 
-      {/* Ir para o site (Apenas Redireciona) */}
-      <button onClick={goToHome} className="logout-btn">
-        <CardsThree />
-        Ir para o site
-      </button>
-
-      {/* Sair da Conta (Faz Logout) */}
-      <button onClick={handleLogout} className="logout-btn">
-        <SignOut />
-        Sair da conta
-      </button>
+      <div className="footer-section">
+        <button onClick={handleLogout} className="logout-btn">
+          <SignOut weight="bold" />
+          <span>Sair da conta</span>
+        </button>
+      </div>
     </MenuStyles>
   );
 };
@@ -63,60 +65,79 @@ export const Menu = ({ isMobileMenuOpen }: MenuProps) => {
 const MenuStyles = styled.div<{ isOpen?: boolean }>`
   grid-column: 1;
   grid-row: 1 / span 2;
-  background-color: #003666;
-  padding: 20px 30px;
-  border-right: 1px solid #ddd;
+  background: linear-gradient(180deg, #003666 0%, #002649 100%);
   display: flex;
   flex-direction: column;
-  gap: 20px;
   min-height: 100vh;
   max-height: 100vh;
   transition: all 0.3s ease;
-  overflow-y: auto; /* Permite rolagem caso tenha muitas páginas */
+  overflow-y: auto;
+  width: 260px; 
+  box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
 
-  h1 {
-    font-size: 4rem;
-    margin-top: 2vh;
-    margin-bottom: 4vh;
-    margin-left: 2vh;
-    font-weight: 650;
-    color: #ffffff;
+  .logo-container {
+    padding: 25px 20px;
     display: flex;
+    justify-content: center;
     align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 20px;
+  }
 
-    @media (max-width: 768px) {
-      font-size: 2rem; /* Reduz no mobile */
-    }
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    padding: 0 15px;
   }
 
   a {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
+    padding: 14px 16px;
+    margin: 5px 0;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
     text-decoration: none;
-    background: none;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: all 0.2s ease;
+    position: relative;
 
-    svg {
-      font-size: 1.5rem;
-      @media (max-width: 768px) {
-        font-size: 1.2rem; /* Reduz ícone no mobile */
-      }
+    .icon-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 1.4rem;
+    }
+
+    .label {
+      transition: transform 0.2s ease;
     }
 
     &:hover {
-      background-color: #0571e1;
-      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+      
+      .label {
+        transform: translateX(3px);
+      }
     }
 
-    @media (max-width: 768px) {
-      font-size: 1.2rem; /* Reduz texto no mobile */
-      padding: 10px 16px;
+    &.active {
+      background-color: rgba(0, 149, 255, 0.15);
+      color: #00a5e8;
+      font-weight: 600;
+      
+      .active-indicator {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 4px;
+        height: 100%;
+        background: #00a5e8;
+        border-radius: 0 4px 4px 0;
+      }
     }
   }
 
@@ -124,46 +145,45 @@ const MenuStyles = styled.div<{ isOpen?: boolean }>`
     flex-grow: 1;
   }
 
+  .footer-section {
+    padding: 20px 15px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
   .logout-btn {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    border-radius: 8px;
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #ffffff;
+    width: 100%;
+    padding: 14px 16px;
+    border-radius: 10px;
+    font-size: 1.05rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.85);
     background: none;
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s ease, color 0.3s ease;
-
+    transition: all 0.2s ease;
+    
     svg {
-      font-size: 1.5rem;
-      @media (max-width: 768px) {
-        font-size: 1.2rem;
-      }
+      font-size: 1.4rem;
+      margin-right: 12px;
     }
 
     &:hover {
-      background-color: #00a5e8;
-      color: #ffffff;
-    }
-
-    @media (max-width: 768px) {
-      font-size: 1.2rem; 
-      padding: 10px 16px;
+      background-color: rgba(255, 54, 54, 0.15);
+      color: #ff5e5e;
     }
   }
 
-  /* Em telas menores, o Menu se comporta como menu móvel "fora" da grid */
   @media (max-width: 768px) {
     position: fixed;
     top: 0;
     left: ${({ isOpen }) => (isOpen ? '0' : '-100%')};
-    width: 220px; /* Tamanho do menu no mobile */
+    width: 250px;
     height: 100vh;
     z-index: 9999;
-    border-right: none;
+    box-shadow: ${({ isOpen }) => (isOpen ? '4px 0 20px rgba(0, 0, 0, 0.25)' : 'none')};
   }
 `;
+
+export default Menu;

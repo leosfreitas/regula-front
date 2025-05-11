@@ -1,151 +1,258 @@
-import React, { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { getAllUsers, deleteUser } from "./api/users";
-import { Trash, X } from "@phosphor-icons/react";
-import toast from "react-hot-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogOverlay } from "@/components/ui/dialog";
 
 interface User {
-  _id: string; // Alterado para _id
+  _id: string;
   name?: string;
   email: string;
+  cpf?: string;
 }
 
-export const Users: React.FC = () => {
+export const Users = () => {
   const [users, setUsers] = useState<User[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [pendingDelete, setPendingDelete] = useState<string | null>(null);
-  const deleteTimeoutRef = useRef<number | null>(null);
+  const [cpfFilter, setCpfFilter] = useState("");
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    async function fetchUsers() {
-      try {
-        const data = await getAllUsers();
-        console.log("Dados recebidos:", data); // Para depuração
-
-        if (Array.isArray(data)) {
-          setUsers(data);
-        } else if (data.data && Array.isArray(data.data)) {
-          setUsers(data.data);
-        } else {
-          toast.error("Formato de dados inesperado.");
-          setUsers([]);
-        }
-      } catch (error: any) {
-        toast.error("Erro ao buscar usuários: " + error.message);
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchUsers();
-
-    // Limpar o timeout ao desmontar o componente
-    return () => {
-      if (deleteTimeoutRef.current) {
-        clearTimeout(deleteTimeoutRef.current);
-      }
-    };
+    loadUsers();
   }, []);
 
-  const handleDelete = async (userId: string) => {
-    if (pendingDelete !== userId) {
-      toast.error("Confirme a exclusão clicando novamente ou cancele.");
-      setPendingDelete(userId);
-      // Iniciar o temporizador para resetar após 5 segundos
-      deleteTimeoutRef.current = window.setTimeout(() => setPendingDelete(null), 5000);
+  useEffect(() => {
+    applyFilters();
+  }, [users, cpfFilter]);
+
+  const loadUsers = async () => {
+    try {
+      setIsLoading(true);
+      const data = await getAllUsers();
+      
+      let usersData: User[] = [];
+      if (Array.isArray(data)) {
+        usersData = data;
+      } else if (data.data && Array.isArray(data.data)) {
+        usersData = data.data;
+      } else {
+        throw new Error("Formato de dados inesperado");
+      }
+      
+      setUsers(usersData);
+      setFilteredUsers(usersData);
+      setError(null);
+    } catch (err: any) {
+      setError("Não foi possível carregar os usuários. Por favor, tente novamente.");
+      console.error("Erro ao carregar usuários:", err);
+      setUsers([]);
+      setFilteredUsers([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const applyFilters = () => {
+    if (!Array.isArray(users)) {
+      console.error("users is not an array:", users);
+      setFilteredUsers([]);
       return;
     }
+    
+    let result = [...users];
+    
+    if (cpfFilter.trim()) {
+      const searchLower = cpfFilter.toLowerCase();
+      result = result.filter(user => 
+        (user.cpf && user.cpf.toLowerCase().includes(searchLower)) ||
+        (user.email && user.email.toLowerCase().includes(searchLower)) ||
+        (user.name && user.name.toLowerCase().includes(searchLower))
+      );
+    }
+    
+    setFilteredUsers(result);
+  };
 
+  const handleCpfFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCpfFilter(e.target.value);
+  };
+
+  const handleClearFilters = () => {
+    setCpfFilter("");
+  };
+
+  const handleDeleteInitiate = (userId: string) => {
+    setUserToDelete(userId);
+    setDeleteConfirmOpen(true);
+  };
+
+  const handleDeleteConfirmed = async () => {
+    if (!userToDelete) return;
+    
     try {
-      await deleteUser(userId);
-      setUsers((prevUsers) => prevUsers.filter((user) => user._id !== userId)); // Alterado para _id
-      toast.success("Usuário excluído com sucesso.");
-      setPendingDelete(null);
-    } catch (error: any) {
-      toast.error("Erro ao excluir usuário: " + error.message);
+      setIsDeleting(true);
+      await deleteUser(userToDelete);
+      
+      // Update local state after successful deletion
+      setUsers(prevUsers => 
+        prevUsers.filter(u => u._id !== userToDelete)
+      );
+      setFilteredUsers(prevFiltered => 
+        prevFiltered.filter(u => u._id !== userToDelete)
+      );
+      
+      setDeleteConfirmOpen(false);
+      setUserToDelete(null);
+      
+    } catch (err: any) {
+      setError("Não foi possível excluir o usuário. Por favor, tente novamente.");
+      console.error("Erro ao excluir usuário:", err);
+    } finally {
+      setIsDeleting(false);
     }
   };
-
-  const handleCancelDelete = () => {
-    if (deleteTimeoutRef.current) {
-      clearTimeout(deleteTimeoutRef.current);
-    }
-    setPendingDelete(null);
-    toast("Exclusão cancelada.", { icon: "ℹ️" });
-  };
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-2xl sm:text-4xl text-gray-600">Carregando usuários...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="text-red-600 text-center mt-10 text-2xl sm:text-4xl">
-        Erro: {error}
-      </div>
-    );
-  }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-8 py-8">
-      <h1 className="text-3xl sm:text-6xl font-bold mb-6 sm:mb-12">Lista de usuários</h1>
+    <div className="flex flex-col items-center justify-start min-h-[80vh] bg-gray-100 px-4 w-full py-8">
+      <div className="w-full max-w-7xl bg-white rounded-lg shadow-lg p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Administração de Usuários</h1>
+        </div>
 
-      {users.length === 0 ? (
-        <p className="text-2xl sm:text-4xl text-gray-600 text-center">
-          Nenhum usuário encontrado.
-        </p>
-      ) : (
-        <div className="space-y-4 sm:space-y-8">
-          {users.map((user) => (
-            <div
-              key={user._id} // Alterado para _id
-              className="w-full lg:w-[100vh] transition-all duration-300 bg-white border-2 border-gray-300 rounded-lg shadow-lg p-4 sm:p-8 flex flex-col md:flex-row justify-between items-start md:items-center hover:shadow-2xl"
-            >
-              <div className="text-xl sm:text-2xl md:text-3xl mb-4 md:mb-0">
-                <p>
-                  <strong>Nome:</strong> {user.name || "Nome não informado"}
-                </p>
-                <p>
-                  <strong>Email:</strong> {user.email}
-                </p>
-              </div>
-              <div className="flex items-center gap-2 sm:gap-4">
-                {pendingDelete === user._id ? ( // Alterado para _id
-                  <>
-                    <button
-                      className="bg-orange-500 hover:bg-orange-600 text-white font-bold text-lg sm:text-2xl px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2"
-                      onClick={() => handleDelete(user._id)} // Alterado para _id
-                    >
-                      <Trash size={20} className="w-5 h-5 sm:w-6 sm:h-6" />
-                      Confirmar
-                    </button>
-                    <button
-                      className="bg-gray-500 hover:bg-gray-600 text-white font-bold text-lg sm:text-2xl px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2"
-                      onClick={handleCancelDelete}
-                    >
-                      <X size={20} className="w-5 h-5 sm:w-6 sm:h-6" />
-                      Cancelar
-                    </button>
-                  </>
-                ) : (
-                  <button
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold text-lg sm:text-2xl px-4 sm:px-6 py-2 sm:py-3 rounded-lg flex items-center gap-2 sm:gap-4"
-                    onClick={() => handleDelete(user._id)} // Alterado para _id
-                  >
-                    <Trash size={24} className="w-6 h-6 sm:w-8 sm:h-8" />
-                    Excluir
-                  </button>
-                )}
+        {/* Filters */}
+        <div className="mb-8 bg-gray-50 p-6 rounded-lg">
+          <h2 className="text-xl font-semibold text-gray-800 mb-4">Filtros</h2>
+          <div className="flex flex-wrap gap-4">
+            {/* CPF/Email/Name Filter */}
+            <div className="w-full md:w-auto flex-grow">
+              <div className="flex flex-col md:flex-row gap-2">
+                <div className="flex-grow">
+                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cpf-filter">
+                    Buscar
+                  </label>
+                  <input
+                    id="cpf-filter"
+                    type="text"
+                    value={cpfFilter}
+                    onChange={handleCpfFilterChange}
+                    placeholder="CPF, email ou nome"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
               </div>
             </div>
-          ))}
+
+            {/* Clear Filters */}
+            <div className="w-full md:w-auto flex items-end">
+              <button
+                onClick={handleClearFilters}
+                className="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline h-10 cursor-pointer"
+              >
+                Limpar Filtros
+              </button>
+            </div>
+          </div>
         </div>
-      )}
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded mb-6">
+            {error}
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+          </div>
+        ) : !Array.isArray(filteredUsers) ? (
+          <div className="text-center py-20">
+            <p className="text-gray-500 text-xl mb-4">Erro ao carregar usuários. Tente novamente.</p>
+          </div>
+        ) : filteredUsers.length === 0 ? (
+          <div className="text-center py-20">
+            <p className="text-gray-500 text-xl mb-4">Nenhum usuário encontrado.</p>
+          </div>
+        ) : (
+          <div className="rounded-lg border border-gray-200">
+            <div className="h-96 overflow-auto">
+              <table className="min-w-full bg-white">
+                <thead className="sticky top-0 bg-gray-100 z-10">
+                  <tr className="text-gray-600 uppercase text-sm leading-normal">
+                    <th className="py-4 px-6 text-left">Nome</th>
+                    <th className="py-4 px-6 text-left">Email</th>
+                    <th className="py-4 px-6 text-left">CPF</th>
+                    <th className="py-4 px-6 text-center">Ações</th>
+                  </tr>
+                </thead>
+                <tbody className="text-gray-600 text-base">
+                  {filteredUsers.map((user) => (
+                    <tr key={user._id} className="border-b border-gray-200 hover:bg-gray-50">
+                      <td className="py-4 px-6 font-medium">{user.name || "Nome não informado"}</td>
+                      <td className="py-4 px-6">{user.email}</td>
+                      <td className="py-4 px-6">{user.cpf || "-"}</td>
+                      <td className="py-4 px-6 text-center">
+                        <button 
+                          onClick={() => handleDeleteInitiate(user._id)}
+                          className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded transition-colors cursor-pointer"
+                        >
+                          Excluir
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
+        <DialogOverlay className="bg-black/50 fixed inset-0" />
+        <DialogContent className="max-w-md bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Confirmar Exclusão</DialogTitle>
+          </DialogHeader>
+          
+          <p className="text-gray-700 my-6">
+            Tem certeza que deseja excluir este usuário? Esta ação não pode ser desfeita.
+          </p>
+          
+          <DialogFooter className="flex justify-end gap-3 mt-4">
+            <button
+              type="button"
+              onClick={() => {
+                setDeleteConfirmOpen(false);
+                setUserToDelete(null);
+              }}
+              className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded cursor-pointer"
+              disabled={isDeleting}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={handleDeleteConfirmed}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <div className="flex items-center">
+                  <div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full mr-2"></div>
+                  <span>Excluindo...</span>
+                </div>
+              ) : (
+                "Confirmar Exclusão"
+              )}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+export default Users;

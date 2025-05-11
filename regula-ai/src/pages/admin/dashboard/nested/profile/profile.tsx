@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { getAdminData, updateAdminData } from "./api/profile";
 import { requestPasswordReset } from "@/pages/public/auth/nested/resetPass/api/RequestPasswordReset";
-import toast from "react-hot-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogOverlay } from "@/components/ui/dialog";
 
 export const Profile = () => {
   const [adminData, setAdminData] = useState<any>(null);
@@ -10,15 +10,12 @@ export const Profile = () => {
   const [cpf, setCpf] = useState("");
   const [phone, setPhone] = useState("");
   const [isEditing, setIsEditing] = useState(false);
-  const [resetEmail, setResetEmail] = useState("");
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    document.body.style.overflow = "hidden"; // Bloqueia o scroll da página inteira
-    return () => {
-      document.body.style.overflow = "auto"; // Restaura quando o componente desmontar
-    };
-  }, []);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isResetDialogOpen, setIsResetDialogOpen] = useState(false);
+  const [isResetSending, setIsResetSending] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchAdminData();
@@ -26,223 +23,277 @@ export const Profile = () => {
 
   const fetchAdminData = async () => {
     try {
+      setIsLoading(true);
+      setError(null);
       const data = await getAdminData();
       setAdminData(data);
-      setName(data.name);
-      setEmail(data.email);
-      setResetEmail(data.email);
-      setCpf(data.cpf);
-      setPhone(data.phone);
-    } catch (err) {
-      console.error(err);
-      toast.error("Erro ao carregar os dados do perfil.");
+      setName(data.name || "");
+      setEmail(data.email || "");
+      setCpf(data.cpf || "");
+      setPhone(data.phone || "");
+    } catch (err: any) {
+      console.error("Erro ao carregar dados do perfil:", err);
+      setError("Não foi possível carregar os dados do perfil. Por favor, tente novamente.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     try {
+      setIsUpdating(true);
+      setError(null);
       await updateAdminData(name, email, cpf, phone);
-      toast.success("Dados atualizados com sucesso!");
-      fetchAdminData();
+      
+      setSuccessMessage("Dados atualizados com sucesso!");
+      setTimeout(() => setSuccessMessage(null), 5000);
+      
+      await fetchAdminData();
       setIsEditing(false);
-    } catch (error) {
-      toast.error("Erro ao atualizar os dados.");
+    } catch (err: any) {
+      console.error("Erro ao atualizar dados do perfil:", err);
+      setError("Não foi possível atualizar os dados. Por favor, tente novamente.");
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  const handlePasswordReset = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handlePasswordReset = async () => {
+    if (!email) return;
+    
     try {
-      await requestPasswordReset(resetEmail);
-      toast.success("Link de redefinição de senha enviado com sucesso.");
-      setIsModalOpen(false);
-    } catch (error: any) {
-      toast.error(error.message || "Erro ao solicitar redefinição de senha.");
+      setIsResetSending(true);
+      setError(null);
+      await requestPasswordReset(email);
+      
+      setSuccessMessage("Link de redefinição de senha enviado com sucesso!");
+      setTimeout(() => setSuccessMessage(null), 5000);
+      
+      setIsResetDialogOpen(false);
+    } catch (err: any) {
+      console.error("Erro ao solicitar redefinição de senha:", err);
+      setError("Não foi possível enviar o link de redefinição. Por favor, tente novamente.");
+    } finally {
+      setIsResetSending(false);
     }
   };
+
+  const renderEditForm = () => (
+    <form onSubmit={handleUpdate} className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-3" htmlFor="name">
+            Nome
+          </label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-3" htmlFor="email">
+            Email
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-3" htmlFor="cpf">
+            CPF
+          </label>
+          <input
+            id="cpf"
+            type="text"
+            value={cpf}
+            onChange={(e) => setCpf(e.target.value)}
+            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        
+        <div>
+          <label className="block text-gray-700 text-base font-bold mb-3" htmlFor="phone">
+            Telefone
+          </label>
+          <input
+            id="phone"
+            type="text"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+      </div>
+
+      <div className="flex justify-end gap-4 mt-8">
+        <button
+          type="button"
+          onClick={() => setIsEditing(false)}
+          className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded cursor-pointer text-base"
+          disabled={isUpdating}
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded cursor-pointer text-base"
+          disabled={isUpdating}
+        >
+          {isUpdating ? (
+            <div className="flex items-center">
+              <div className="animate-spin h-5 w-5 border-b-2 border-white rounded-full mr-2"></div>
+              <span>Salvando...</span>
+            </div>
+          ) : (
+            "Salvar Alterações"
+          )}
+        </button>
+      </div>
+    </form>
+  );
+
+  const renderProfileView = () => (
+    <div className="space-y-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div>
+          <h3 className="text-gray-700 text-base font-bold mb-3">Nome</h3>
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 text-lg">{name || "-"}</div>
+        </div>
+        
+        <div>
+          <h3 className="text-gray-700 text-base font-bold mb-3">Email</h3>
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 text-lg">{email || "-"}</div>
+        </div>
+        
+        <div>
+          <h3 className="text-gray-700 text-base font-bold mb-3">CPF</h3>
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 text-lg">{cpf || "-"}</div>
+        </div>
+        
+        <div>
+          <h3 className="text-gray-700 text-base font-bold mb-3">Telefone</h3>
+          <div className="bg-gray-50 p-5 rounded-lg border border-gray-200 text-lg">{phone || "-"}</div>
+        </div>
+      </div>
+      
+      <div className="flex flex-wrap gap-4 justify-end mt-8">
+        <button
+          onClick={() => setIsEditing(true)}
+          className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded text-base font-bold cursor-pointer"
+        >
+          Editar Perfil
+        </button>
+        <button
+          onClick={() => setIsResetDialogOpen(true)}
+          className="bg-purple-500 hover:bg-purple-600 text-white py-3 px-6 rounded text-base font-bold cursor-pointer"
+        >
+          Alterar Senha
+        </button>
+      </div>
+    </div>
+  );
 
   return (
-    <div className="flex flex-col items-center bg-gray-100 min-h-screen py-6 sm:py-12 px-4 sm:px-6 overflow-hidden w-full h-full">
-      {/* Container do card com os dados */}
-      <div className="w-full max-w-full sm:max-w-3xl bg-white p-6 sm:p-10 shadow-xl rounded-lg">
-        <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-6 sm:mb-8 text-center">
-          Meu Perfil
-        </h2>
+    <div className="flex flex-col items-center min-h-[50vh] bg-gray-100 px-4 w-full py-8">
+      <div className="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8">
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-800">Meu Perfil</h1>
+        </div>
 
-        {/* Dados do admin */}
-        {adminData ? (
-          isEditing ? (
-            // Formulário de edição
-            <form onSubmit={handleUpdate} className="space-y-6 sm:space-y-8">
-              {/* Nome */}
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  Nome
-                </label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 sm:px-5 sm:py-4 text-base sm:text-xl md:text-2xl"
-                />
-              </div>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded mb-6">
+            {error}
+          </div>
+        )}
 
-              {/* Email */}
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 sm:px-5 sm:py-4 text-base sm:text-xl md:text-2xl"
-                />
-              </div>
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded mb-6">
+            {successMessage}
+          </div>
+        )}
 
-              {/* CPF */}
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  CPF
-                </label>
-                <input
-                  type="text"
-                  value={cpf}
-                  onChange={(e) => setCpf(e.target.value)}
-                  className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 sm:px-5 sm:py-4 text-base sm:text-xl md:text-2xl"
-                />
-              </div>
-
-              {/* Telefone */}
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  Telefone
-                </label>
-                <input
-                  type="text"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 sm:px-5 sm:py-4 text-base sm:text-xl md:text-2xl"
-                />
-              </div>
-
-              {/* Botões */}
-              <div className="flex justify-end space-x-4 sm:space-x-6 mt-6 sm:mt-8">
-                <button
-                  type="button"
-                  onClick={() => setIsEditing(false)}
-                  className="px-4 sm:px-8 py-2 sm:py-4 bg-gray-400 text-gray-900 rounded-lg hover:bg-gray-500 text-base sm:text-xl md:text-2xl"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 sm:px-8 py-2 sm:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base sm:text-xl md:text-2xl"
-                >
-                  Salvar
-                </button>
-              </div>
-            </form>
-          ) : (
-            // Exibição dos dados
-            <div className="space-y-6 sm:space-y-8">
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  Nome
-                </label>
-                <p className="mt-2 px-3 py-2 sm:px-5 sm:py-4 bg-gray-100 rounded-lg text-base sm:text-xl md:text-2xl">
-                  {name}
-                </p>
-              </div>
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  Email
-                </label>
-                <p className="mt-2 px-3 py-2 sm:px-5 sm:py-4 bg-gray-100 rounded-lg text-base sm:text-xl md:text-2xl">
-                  {email}
-                </p>
-              </div>
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  CPF
-                </label>
-                <p className="mt-2 px-3 py-2 sm:px-5 sm:py-4 bg-gray-100 rounded-lg text-base sm:text-xl md:text-2xl">
-                  {cpf}
-                </p>
-              </div>
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  Telefone
-                </label>
-                <p className="mt-2 px-3 py-2 sm:px-5 sm:py-4 bg-gray-100 rounded-lg text-base sm:text-xl md:text-2xl">
-                  {phone}
-                </p>
-              </div>
-
-              {/* Botões */}
-              <div className="flex justify-between mt-6 sm:mt-8">
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-4 sm:px-8 py-2 sm:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base sm:text-xl md:text-2xl"
-                >
-                  Editar
-                </button>
-                <button
-                  onClick={() => setIsModalOpen(true)}
-                  className="px-4 sm:px-8 py-2 sm:py-4 bg-red-600 text-white rounded-lg hover:bg-red-700 text-base sm:text-xl md:text-2xl"
-                >
-                  Redefinir Senha
-                </button>
-              </div>
-            </div>
-          )
+        {isLoading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+          </div>
+        ) : !adminData ? (
+          <div className="text-center py-20">
+            <p className="text-gray-500 text-xl mb-4">Erro ao carregar dados do perfil. Tente novamente.</p>
+            <button 
+              onClick={fetchAdminData}
+              className="bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded cursor-pointer text-base font-bold mt-4"
+            >
+              Recarregar
+            </button>
+          </div>
         ) : (
-          <p className="text-center text-gray-500 text-lg sm:text-xl md:text-2xl">
-            Carregando dados do perfil...
-          </p>
+          <div className="bg-white p-6">
+            {isEditing ? renderEditForm() : renderProfileView()}
+          </div>
         )}
       </div>
 
-      {/* Dialog para redefinir senha */}
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 px-2">
-          <div className="bg-white p-6 sm:p-10 rounded-lg shadow-xl w-full max-w-md">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800 mb-6 text-center">
-              Redefinir Senha
-            </h2>
-            <form onSubmit={handlePasswordReset} className="space-y-4 sm:space-y-6">
-              <div>
-                <label className="block text-lg sm:text-xl md:text-2xl font-medium text-gray-700">
-                  E-mail
-                </label>
-                <input
-                  type="email"
-                  value={resetEmail}
-                  readOnly
-                  className="w-full mt-2 border border-gray-300 rounded-lg px-3 py-2 sm:px-5 sm:py-4 text-base sm:text-xl md:text-2xl bg-gray-100 cursor-not-allowed"
-                  required
-                />
-              </div>
-              <div className="flex justify-center space-x-4 sm:space-x-6 mt-4 sm:mt-8">
-                <button
-                  type="button"
-                  onClick={() => setIsModalOpen(false)}
-                  className="px-4 sm:px-8 py-2 sm:py-4 bg-gray-400 text-gray-900 rounded-lg hover:bg-gray-500 text-base sm:text-xl md:text-2xl"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 sm:px-8 py-2 sm:py-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-base sm:text-xl md:text-2xl"
-                >
-                  Enviar Link
-                </button>
-              </div>
-            </form>
+      {/* Password Reset Dialog */}
+      <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
+        <DialogOverlay className="bg-black/50 fixed inset-0" />
+        <DialogContent className="max-w-md bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
+          <DialogHeader>
+            <DialogTitle className="text-xl font-bold">Alteração de Senha</DialogTitle>
+          </DialogHeader>
+          
+          <div className="my-6">
+            <p className="text-gray-700 mb-4 text-base">
+              Deseja enviar um link de redefinição de senha para seu email?
+            </p>
+            
+            <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 flex items-center justify-between mt-4">
+              <span className="font-medium text-base">{email}</span>
+              <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">Email cadastrado</span>
+            </div>
           </div>
-        </div>
-      )}
+          
+          <DialogFooter className="flex justify-end gap-4 mt-4">
+            <button
+              type="button"
+              onClick={() => setIsResetDialogOpen(false)}
+              className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded cursor-pointer text-base"
+              disabled={isResetSending}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={handlePasswordReset}
+              className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded cursor-pointer text-base"
+              disabled={isResetSending}
+            >
+              {isResetSending ? (
+                <div className="flex items-center">
+                  <div className="animate-spin h-5 w-5 border-b-2 border-white rounded-full mr-2"></div>
+                  <span>Enviando...</span>
+                </div>
+              ) : (
+                "Enviar Link"
+              )}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
+
+export default Profile;

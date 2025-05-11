@@ -5,12 +5,12 @@ import { Users } from '@phosphor-icons/react';
 export const menuItems = [
     {
         label: 'Página Inicial',
-        icon: <House />,
+        icon: <House weight='bold' />,
         href: '/user/dashboard/home',
     },
     {
         label: 'Perfil',
-        icon: <User />,
+        icon: <User weight='bold' />,
         href: '/user/dashboard/profile',
     },
 ];

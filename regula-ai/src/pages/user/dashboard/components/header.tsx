@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useMatches } from "react-router-dom";
+import { useMatches, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { getUserName } from "./api/header";
+import { Bell, Gear } from "@phosphor-icons/react";
 
 import {
   Breadcrumb,
@@ -11,14 +12,15 @@ import {
   BreadcrumbSeparator,
 } from "../../../../components/ui/breadcrumb";
 
-/* Tipagem para receber a função de toggle do menu */
 interface HeaderProps {
   onToggleMenu?: () => void;
 }
 
 export function Header({ onToggleMenu }: HeaderProps) {
   const matches = useMatches();
+  const location = useLocation();
   const [userName, setUserName] = useState<string | null>(null);
+  const [notificationCount, setNotificationCount] = useState<number>(2); // Simulando 2 notificações
 
   useEffect(() => {
     async function fetchUserNameData() {
@@ -36,25 +38,27 @@ export function Header({ onToggleMenu }: HeaderProps) {
   const routeLabels: Record<string, string> = {
     dashboard: "Dashboard",
     home: "Página Inicial",
-    finances: "Finanças",
-    budget: "Orçamento",
     profile: "Perfil",
-    history: "Histórico",
     users: "Usuários",
-    sac: "SAC",
-    pacotes: "Pacotes",
-    contato: "Contato",
+    contact: "Contato"
   };
 
   const capitalizeFirstLetter = (str: string): string =>
     str.charAt(0).toUpperCase() + str.slice(1);
 
+  // Pega o título da página atual
+  const getCurrentPageTitle = () => {
+    const key = location.pathname.split("/").pop() || "";
+    return routeLabels[key] || capitalizeFirstLetter(key);
+  };
+
   return (
     <HeaderStyle>
-      {/* Breadcrumbs horizontal */}
-      <div className="breadcrumb-container">
+      {/* Breadcrumbs e título da página */}
+      <div className="page-section">
+        <h1 className="page-title">{getCurrentPageTitle()}</h1>
         <Breadcrumb>
-          <BreadcrumbList className="breadcrumb-horizontal">
+          <BreadcrumbList className="breadcrumb-list">
             {matches.map((match, index) => {
               const key = match.pathname.split("/").pop() || "";
               const breadcrumbLabel =
@@ -71,7 +75,6 @@ export function Header({ onToggleMenu }: HeaderProps) {
                     </BreadcrumbLink>
                   </BreadcrumbItem>
 
-                  {/* Separador (aparece se não for o último item) */}
                   {index < matches.length - 1 && (
                     <BreadcrumbSeparator className="breadcrumb-separator" />
                   )}
@@ -82,15 +85,29 @@ export function Header({ onToggleMenu }: HeaderProps) {
         </Breadcrumb>
       </div>
 
-      {/* Nome do usuário: só aparece em telas maiores que 768px */}
-      {userName && (
-        <div className="userName-container">
-          <span className="userName-text">{userName}</span>
+      {/* User Section */}
+      <div className="user-section">
+        <div className="notification-bell">
+          <Bell weight="fill" size={22} />
+          {notificationCount > 0 && <span className="notification-badge">{notificationCount}</span>}
         </div>
-      )}
+        
+        <div className="settings-icon">
+          <Gear weight="fill" size={22} />
+        </div>
+        
+        {userName && (
+          <div className="user-profile">
+            <div className="user-avatar">
+              {userName.charAt(0).toUpperCase()}
+            </div>
+            <span className="user-name">{userName}</span>
+          </div>
+        )}
+      </div>
 
       {/* Botão Hamburger (somente para mobile) */}
-      <button className="hamburger" onClick={onToggleMenu}>
+      <button className="hamburger" onClick={onToggleMenu} aria-label="Menu">
         <svg
           className="hamburger-icon"
           fill="none"
@@ -106,86 +123,148 @@ export function Header({ onToggleMenu }: HeaderProps) {
 }
 
 const HeaderStyle = styled.div`
-  height: 80%;
   width: 100%;
   background-color: white;
-  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.05);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 25px;
+  padding: 16px 25px;
+  height: 115px;
 
-  .breadcrumb-container {
-    flex: 1;
+  .page-section {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
   }
 
-  .breadcrumb-horizontal {
+  .page-title {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 4px;
+  }
+
+  .breadcrumb-list {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: 0.5rem;
   }
 
   .breadcrumb-link {
-    font-size: 1.4rem;
-    font-weight: 500;
-    color: #333;
+    font-size: 0.9rem;
+    color: #666;
     text-decoration: none;
     
-    /* Aumenta no desktop (>= 1024px) */
-    @media (min-width: 1024px) {
-      font-size: 1.8rem;
+    &:hover {
+      color: #0095ff;
+      text-decoration: underline;
     }
   }
 
   .breadcrumb-separator {
-    font-size: 1.4rem;
-    color: #777;
+    font-size: 0.9rem;
+    color: #999;
+  }
 
-    @media (min-width: 1024px) {
-      font-size: 1.8rem;
+  .user-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .notification-bell, .settings-icon {
+    position: relative;
+    color: #555;
+    cursor: pointer;
+    transition: color 0.2s ease;
+    
+    &:hover {
+      color: #0095ff;
     }
   }
 
-  .userName-container {
-    margin-right: 16px;
-    @media (max-width: 768px) {
-      display: none;
-    }
+  .notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    background-color: #ff3e3e;
+    color: white;
+    font-size: 0.7rem;
+    font-weight: bold;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .userName-text {
-    font-size: 1.2rem;
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-left: 5px;
+  }
+
+  .user-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, #0095ff, #006edc);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
     font-weight: 600;
-    color: #333;
-
-    /* Aumenta no desktop (>= 1024px) */
-    @media (min-width: 1024px) {
-      font-size: 1.8rem;
-    }
   }
 
-  /* Botão hamburger (escondido em desktop) */
+  .user-name {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    max-width: 150px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .hamburger {
     display: none;
     background: transparent;
     border: none;
     cursor: pointer;
-
+    
     @media (max-width: 768px) {
       display: block;
     }
   }
 
   .hamburger-icon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     color: #333;
+  }
 
-    @media (max-width: 768px) {
-      width: 24px;
-      height: 24px;
+  @media (max-width: 991px) {
+    .user-name {
+      max-width: 100px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .page-section {
+      flex: 1;
+    }
+    
+    .user-profile {
+      .user-name {
+        display: none;
+      }
     }
   }
 `;
+
+export default Header;
