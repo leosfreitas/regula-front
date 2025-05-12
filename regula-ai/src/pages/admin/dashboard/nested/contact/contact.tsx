@@ -180,7 +180,7 @@ export const Contact = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-start min-h-[80vh] bg-gray-100 px-4 w-full py-8">
+    <div className="flex flex-col items-center justify-start min-h-[80vh] px-4 w-full py-8">
       <div className="w-full max-w-7xl bg-white rounded-lg shadow-lg p-8">
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">Administração de Contatos</h1>
