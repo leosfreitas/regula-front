@@ -37,7 +37,7 @@ export const PasswordReset = () => {
   return (
     <>
       <h2 className="text-3xl font-bold mb-2">Redefinir Senha</h2>
-      <p className="mb-8 text-lg">Crie uma nova senha para sua conta</p>
+      <p className="mb-8 text-lg">Crie uma nova senha para sua conta!</p>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
@@ -68,7 +68,7 @@ export const PasswordReset = () => {
 
         <button
           type="submit"
-          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
         >
           Redefinir Senha
         </button>

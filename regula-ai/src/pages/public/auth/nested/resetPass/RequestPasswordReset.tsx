@@ -20,7 +20,7 @@ export const RequestPasswordReset = () => {
   return (
     <>
       <h2 className="text-3xl font-bold mb-2">Redefinição de Senha</h2>
-      <p className="mb-8 text-lg">Digite seu e-mail para receber um link de redefinição</p>
+      <p className="mb-8 text-lg">Digite seu e-mail para receber um link de redefinição!</p>
 
       <form onSubmit={handleSubmit}>
         <div className="mb-6">
@@ -29,7 +29,7 @@ export const RequestPasswordReset = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="Endereço de email"
+            placeholder="Endereço de e-mail"
             required
             className="w-full p-4 pl-2 border-b border-gray-300 rounded-none text-lg text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-0 focus:border-blue-500"
           />
@@ -37,7 +37,7 @@ export const RequestPasswordReset = () => {
 
         <button
           type="submit"
-          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+          className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
         >
           Enviar Link
         </button>

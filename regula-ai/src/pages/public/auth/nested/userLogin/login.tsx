@@ -31,7 +31,7 @@ export const UserLogin = () => {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-4 pl-12 border-b border-gray-300 rounded-none text-lg focus:outline-none focus:ring-0 focus:ring-blue-500 focus:border-blue-500"
-          placeholder="Endereço de email"
+          placeholder="Endereço de e-mail"
           required
         />
         <div className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400">
@@ -60,7 +60,7 @@ export const UserLogin = () => {
 
       <button
         type="submit"
-        className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+        className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
         >
         Entrar
       </button>

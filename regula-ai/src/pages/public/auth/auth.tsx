@@ -52,7 +52,7 @@ export const Auth = () => {
           <p className="mb-8 text-xl whitespace-nowrap">
             Simplificando a regulação por meio de Inteligência Artificial
           </p>
-          <button className="bg-[#0575E6] text-white py-3 px-10 text-lg font-medium hover:bg-blue-600 transition duration-300"
+          <button className="bg-[#0575E6] text-white py-3 px-10 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
             onClick={handleSaibaMais}
           >
             Saiba mais
@@ -68,7 +68,7 @@ export const Auth = () => {
 
       {/* Botão de voltar */}
       <button
-        className="absolute top-4 left-4 text-white hover:text-gray-300 z-30"
+        className="absolute top-4 left-4 text-white hover:text-gray-300 z-30 cursor-pointer"
         onClick={handleBack}
       >
         <CaretDoubleLeft size={50} />

@@ -165,7 +165,7 @@ export const UserRegister = () => {
         <div className="col-span-1 sm:col-span-2 mt-6">
           <button
             type="submit"
-            className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300"
+            className="w-full bg-[#0575E6] text-white p-4 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
             >
             Cadastrar
           </button>
