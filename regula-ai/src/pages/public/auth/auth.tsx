@@ -47,7 +47,7 @@ export const Auth = () => {
 
         <div className="text-white z-20">
           <div className="mb-8">
-            <img src="/public/RegulaAI.png" alt="Regula.ai Logo" className="h-18" />
+            <img src="/public/RegulaAI.png" className="h-22" />
           </div>
           <p className="mb-8 text-xl whitespace-nowrap">
             Simplificando a regulação por meio de Inteligência Artificial

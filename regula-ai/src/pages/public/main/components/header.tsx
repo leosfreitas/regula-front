@@ -36,10 +36,10 @@ export const Header = () => {
         ${isAtTop ? "bg-transparent backdrop-blur-0" : "bg-black/60 backdrop-blur-sm"}
       `}
     >
-      <div className="flex items-center justify-between max-w-[95%] mx-auto py-4">
+      <div className="flex items-center justify-between max-w-[95%] mx-auto py-6">
         {/* LOGO */}
         <Link to="/home" className="flex items-center">
-          <img src="RegulaAI.png" alt="Logo" className="w-64 transition-all duration-300" />
+          <img src="RegulaAI.png" alt="Logo" className="w-60 transition-all duration-300" />
         </Link>
 
         {/* LINKS E LOGIN BUTTON (Desktop) */}

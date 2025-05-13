@@ -76,10 +76,10 @@ const MenuStyles = styled.div<{ isOpen?: boolean }>`
   box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
 
   .logo-container {
-    padding: 25px 20px;
+    padding: 35px 30px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    justify-content: left;
+    align-items: left;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     margin-bottom: 20px;
   }
