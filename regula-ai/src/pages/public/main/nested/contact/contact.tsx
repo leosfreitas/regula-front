@@ -90,7 +90,7 @@ export const Contact = () => {
                             value={formData.nome}
                             onChange={handleChange}
                             required
-                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-800"
+                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800"
                           />
                         </div>
                         <div>
@@ -101,7 +101,7 @@ export const Contact = () => {
                             value={formData.email}
                             onChange={handleChange}
                             required
-                            className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-800"
+                            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-800"
                           />
                         </div>
                       </div>

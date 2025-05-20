@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import App from "./App";
 import publicRoutes from './pages/public/routes';
 import adminRoutes from './pages/admin/routes';
@@ -10,7 +10,7 @@ export const router = createBrowserRouter([
     ...userRoutes,
     {
         path: "/",
-        element: <App />,
+        element: <Navigate to ="/home" replace />,
     }
 ]);
 
