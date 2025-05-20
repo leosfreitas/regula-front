@@ -15,7 +15,7 @@ export const Home = () => {
   useEffect(() => {
     if (!statsVisible) return;
     const intervalId = window.setInterval(() => {
-      setCountUp(prev => {
+      setCountUp((prev) => {
         const next = {
           productivity: Math.min(prev.productivity + 1, 50),
           cost: Math.min(prev.cost + 1, 38),
@@ -33,7 +33,6 @@ export const Home = () => {
         return next;
       });
     }, 20);
-
     return () => clearInterval(intervalId);
   }, [statsVisible]);
 
@@ -46,6 +45,24 @@ export const Home = () => {
     return () => {
       if (statsRef.current) obs.unobserve(statsRef.current);
     };
+  }, []);
+
+  const [fill, setFill] = useState(false);
+  const funcRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!funcRef.current) return;
+    const obs = new IntersectionObserver(
+      ([entry], observer) => {
+        if (entry.isIntersecting) {
+          setFill(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    obs.observe(funcRef.current);
+    return () => obs.disconnect();
   }, []);
 
   return (
@@ -63,11 +80,17 @@ export const Home = () => {
         <div className="absolute inset-0 flex items-center px-8 md:px-24">
           <div>
             <h1 className="text-white text-4xl md:text-6xl font-bold mb-4 leading-tight">
-              Simplificando a<br />regulação com<br />inteligência artificial.
+              Simplificando a
+              <br />
+              regulação com
+              <br />
+              inteligência artificial.
             </h1>
             <p className="text-white text-lg md:text-xl mb-6">
-              Automação de sinistros<br className="md:hidden" />
-              com rapidez, precisão e<br className="md:hidden" />
+              Automação de sinistros
+              <br className="md:hidden" />
+              com rapidez, precisão e
+              <br className="md:hidden" />
               segurança.
             </p>
             <button className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 transition">
@@ -82,29 +105,50 @@ export const Home = () => {
         <div className="w-[90%] mx-auto">
           <h2 className="text-4xl font-medium mb-6 text-gray-900">Regula.ai</h2>
           <p className="text-lg md:text-2xl text-gray-700 leading-relaxed">
-            A Regula.ai transforma a regulação de sinistros com tecnologia de ponta
-            para que seguradoras operem com mais agilidade, precisão e economia.
+            A Regula.ai transforma a regulação de sinistros com tecnologia de
+            ponta para que seguradoras operem com mais agilidade, precisão e
+            economia.
           </p>
-          <a href="#" className="text-xl text-gray-500 hover:underline mt-6 inline-block">
+          <a
+            href="#"
+            className="text-xl text-gray-500 hover:underline mt-6 inline-block"
+          >
             Saiba mais &gt;
           </a>
 
           {/* Stats */}
-          <div ref={statsRef} className="flex flex-col md:flex-row justify-between items-center gap-6 py-12">
+          <div
+            ref={statsRef}
+            className="flex flex-col md:flex-row justify-between items-center gap-6 py-12"
+          >
             <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">+{countUp.productivity}%</p>
-              <p className="text-base md:text-xl text-gray-700">Produtividade</p>
+              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+                +{countUp.productivity}%
+              </p>
+              <p className="text-base md:text-xl text-gray-700">
+                Produtividade
+              </p>
             </div>
             <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">{countUp.cost}%</p>
-              <p className="text-base md:text-xl text-gray-700">Diminuição dos gastos</p>
+              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+                {countUp.cost}%
+              </p>
+              <p className="text-base md:text-xl text-gray-700">
+                Diminuição dos gastos
+              </p>
             </div>
             <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">+{countUp.satisfaction}%</p>
-              <p className="text-base md:text-xl text-gray-700">Satisfação dos clientes</p>
+              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+                +{countUp.satisfaction}%
+              </p>
+              <p className="text-base md:text-xl text-gray-700">
+                Satisfação dos clientes
+              </p>
             </div>
             <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">+{countUp.partnerships}</p>
+              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+                +{countUp.partnerships}
+              </p>
               <p className="text-base md:text-xl text-gray-700">Parcerias</p>
             </div>
           </div>
@@ -142,66 +186,107 @@ export const Home = () => {
       </div>
 
       {/* Como Funciona */}
-      <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-5xl mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-10 text-gray-900">
+      <section ref={funcRef} className="py-20 px-4 bg-gray-50">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-4xl font-bold mb-16 text-center text-gray-900">
             Como Funciona
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg">
-              <div className="mb-4">
-                <svg className="h-12 w-12 text-blue-600" fill="none" stroke="currentColor" /* ... */ />
+
+          <div className="relative">
+            <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-px bg-gray-300" />
+
+            <div
+              className="absolute left-0 top-1/2 transform -translate-y-1/2 h-[2px] bg-blue-800"
+              style={{
+                width: fill ? "100%" : "0%",
+                transition: "width 5s ease-out",
+              }}
+            />
+
+            <div className="grid grid-cols-3 gap-x-8">
+              <div className="relative flex flex-col items-center">
+                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
+                <div className="mt-36 text-center">
+                  <h3 className="font-semibold text-xl mb-2">
+                    1. Envio de Documentos
+                  </h3>
+                  <p className="text-gray-600">
+                    Faça upload de CNH, apólice, boletim e demais arquivos em um
+                    único clique.
+                  </p>
+                </div>
               </div>
-              <h3 className="font-semibold text-xl mb-2">1. Envio de Documentos</h3>
-              <p className="text-gray-600">
-                Faça upload de CNH, apólice, boletim e demais arquivos em um único clique.
-              </p>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg">
-              <div className="mb-4">
-                <svg className="h-12 w-12 text-blue-600" fill="none" stroke="currentColor" /* ... */ />
+
+              <div className="relative flex flex-col items-center">
+                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
+                <div className="mb-36 text-center">
+                  <h3 className="font-semibold text-xl mb-2">
+                    2. Processamento Automático
+                  </h3>
+                  <p className="text-gray-600">
+                    Nosso motor de IA lê e valida cada documento em segundos.
+                  </p>
+                </div>
               </div>
-              <h3 className="font-semibold text-xl mb-2">2. Processamento Automático</h3>
-              <p className="text-gray-600">
-                Nosso motor de IA lê e valida cada documento em segundos.
-              </p>
-            </div>
-            <div className="flex flex-col items-center p-6 bg-white rounded-xl shadow-lg">
-              <div className="mb-4">
-                <svg className="h-12 w-12 text-blue-600" fill="none" stroke="currentColor" /* ... */ />
+
+              <div className="relative flex flex-col items-center">
+                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
+                <div className="mt-36 text-center">
+                  <h3 className="font-semibold text-xl mb-2">
+                    3. Aprovação Instantânea
+                  </h3>
+                  <p className="text-gray-600">
+                    Receba o resultado final e siga diretamente para o
+                    pagamento.
+                  </p>
+                </div>
               </div>
-              <h3 className="font-semibold text-xl mb-2">3. Aprovação Instantânea</h3>
-              <p className="text-gray-600">
-                Receba o resultado final e siga diretamente para o pagamento.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-    <section className="py-16 px-6 md:px-24 bg-gray-50">
+      {/* Perguntas Frequentes */}
+      <section className="py-16 px-6 md:px-24 bg-gray-50">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-8">Perguntas Frequentes</h2>
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-md text-left">
-              <h3 className="text-xl font-bold mb-3">Como a Regula.ai pode ajudar minha empresa?</h3>
-              <p className="text-gray-700">Nossa solução de IA automatiza o processo de regulação de sinistros, reduzindo custos operacionais e acelerando o atendimento ao cliente.</p>
+              <h3 className="text-xl font-bold mb-3">
+                Como a Regula.ai pode ajudar minha empresa?
+              </h3>
+              <p className="text-gray-700">
+                Nossa solução de IA automatiza o processo de regulação de
+                sinistros, reduzindo custos operacionais e acelerando o
+                atendimento ao cliente.
+              </p>
             </div>
-            
             <div className="bg-white p-6 rounded-lg shadow-md text-left">
-              <h3 className="text-xl font-bold mb-3">Quanto tempo leva para implementar a solução?</h3>
-              <p className="text-gray-700">O processo de implementação geralmente leva de 4 a 6 semanas, dependendo da complexidade e tamanho da sua operação.</p>
+              <h3 className="text-xl font-bold mb-3">
+                Quanto tempo leva para implementar a solução?
+              </h3>
+              <p className="text-gray-700">
+                O processo de implementação geralmente leva de 4 a 6 semanas,
+                dependendo da complexidade e tamanho da sua operação.
+              </p>
             </div>
-            
             <div className="bg-white p-6 rounded-lg shadow-md text-left">
-              <h3 className="text-xl font-bold mb-3">A solução é compatível com nossos sistemas atuais?</h3>
-              <p className="text-gray-700">Sim, desenvolvemos integrações personalizadas com os principais sistemas de gestão de seguros do mercado.</p>
+              <h3 className="text-xl font-bold mb-3">
+                A solução é compatível com nossos sistemas atuais?
+              </h3>
+              <p className="text-gray-700">
+                Sim, desenvolvemos integrações personalizadas com os principais
+                sistemas de gestão de seguros do mercado.
+              </p>
             </div>
-            
             <div className="bg-white p-6 rounded-lg shadow-md text-left">
-              <h3 className="text-xl font-bold mb-3">Como é feito o suporte técnico?</h3>
-              <p className="text-gray-700">Oferecemos suporte técnico 24/7 via chat, e-mail e telefone, com garantia de resposta em até 2 horas para casos críticos.</p>
+              <h3 className="text-xl font-bold mb-3">
+                Como é feito o suporte técnico?
+              </h3>
+              <p className="text-gray-700">
+                Oferecemos suporte técnico 24/7 via chat, e-mail e telefone, com
+                garantia de resposta em até 2 horas para casos críticos.
+              </p>
             </div>
           </div>
         </div>
