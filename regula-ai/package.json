@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "lockfileVersion": 3,
   "requires": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
+  },
   "packages": {
     "": {
       "name": "regula-ai",
