@@ -156,34 +156,112 @@ export const Home = () => {
       </section>
 
       {/* Imagem de transição com card */}
-      <div className="relative w-full h-[70vh]">
+      <section className="relative w-full h-[70vh]">
         <img
           src="/landing_page/background2.png"
-          alt="Landing"
-          className="w-full h-full object-cover"
+          alt="Background"
+          className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black opacity-50" />
-        <div className="absolute inset-0 flex items-center justify-center px-4">
-          <div className="bg-white rounded-xl shadow-lg p-8 max-w-3xl w-full">
-            <h3 className="text-2xl font-semibold mb-4">Frase de Efeito</h3>
-            <p className="text-gray-700 mb-8">
-              Conte com a gente para melhorar a performance de sua empresa.
+        <div className="absolute inset-0 bg-black opacity-50 " />
+        
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center h-full max-h-[70vh] mx-42 md:px-24 gap-42">
+          <div className="w-full md:w-5/12 lg:w-4/12 space-y-6 text-white">
+            <span className="inline-block px-4 py-1 rounded-full border border-white text-xs font-medium tracking-widest">
+              TRAVEL TO DELIVER
+            </span>
+            <h2 className="text-4xl font-bold leading-tight">
+              Travel-Driven
+              <br />
+              Shipping
+            </h2>
+            <p className="text-lg">
+              Revolutionizing package delivery—connect, save, earn, and trust in a global network.
             </p>
-            <div className="flex items-center justify-between text-center text-gray-800 text-base">
-              <div className="flex-1">Acurácia aumentada</div>
-              <div className="border-l h-6 mx-4"></div>
-              <div className="flex-1">Taxa de aceitação</div>
-              <div className="border-l h-6 mx-4"></div>
-              <div className="flex-1">Preço acessível</div>
+          </div>
+          <div className="w-full md:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
+              <svg
+                className="w-8 h-8 stroke-gray-900"
+                fill="none"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
+              </svg>
+              <div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">Worldwide</h3>
+                <p className="text-gray-600 text-sm">
+                  Send packages globally from any city with matching travelers.
+                </p>
+              </div>
             </div>
-            <div className="mt-8 text-right">
-              <button className="bg-blue-900 text-white px-6 py-2 rounded-md hover:bg-blue-800 transition">
-                Entre em Contato
-              </button>
+
+            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
+              <svg
+                className="w-8 h-8 stroke-gray-900"
+                fill="none"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <circle cx="12" cy="12" r="8" />
+                <path d="M8 12h8M8 15h8M8 9h8" />
+              </svg>
+              <div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">Profitable</h3>
+                <p className="text-gray-600 text-sm">
+                  Earn money on travel and fund future trips at reduced costs.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
+              <svg
+                className="w-8 h-8 stroke-gray-900"
+                fill="none"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M3 3v18h18" />
+                <path d="M8 16l3-3 2 2 5-5" />
+              </svg>
+              <div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">Economical</h3>
+                <p className="text-gray-600 text-sm">
+                  Reduce shipping costs by matching travelers to carry packages.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
+              <svg
+                className="w-8 h-8 stroke-gray-900"
+                fill="none"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 3l8 4v5a8 8 0 01-16 0V7l8-4z" />
+                <path d="M12 11v4" />
+                <path d="M10 13h4" />
+              </svg>
+              <div>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">Secure Payment</h3>
+                <p className="text-gray-600 text-sm">
+                  Payments are safely held until delivery or refunded if the trip is canceled.
+                </p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Como Funciona */}
       <section ref={funcRef} className="py-20 px-4 bg-gray-50">
