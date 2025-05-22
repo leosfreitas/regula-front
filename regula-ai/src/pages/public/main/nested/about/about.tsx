@@ -82,53 +82,7 @@ export const About = () => {
 
         <div className="w-full border-t border-gray-200 my-4"></div>
 
-        <section className="py-18 px-4 bg-white">
-        <div className="w-[90%] mx-auto">
-            <h2 className="text-4xl font-medium mb-10 text-gray-900">Nossa Trajetória</h2>
 
-            {/* Timeline estilizada */}
-            <div className="w-full relative mx-auto mt-16 mb-24">
-            {/* Linha do tempo horizontal */}
-            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-blue-900 -translate-y-1/2"></div>
-            
-            {/* Container para os pontos da trajetória */}
-            <div className="flex justify-between relative">
-                {/* Ponto 2024 */}
-                <div className="relative flex flex-col items-center">
-                {/* Linha vertical conectando o ponto à linha principal */}
-                <div className="w-0.5 h-10 bg-blue-900"></div>
-                <div className="w-4 h-4 bg-blue-900 rounded-full relative z-10"></div>
-                <div className="absolute top-16 text-yellow-600 font-bold text-2xl">2024</div>
-                <div className="absolute top-24 w-32 text-center text-gray-700">
-                    XXXXXXXXXXX
-                </div>
-                </div>
-                
-                {/* Ponto 2025 */}
-                <div className="relative flex flex-col items-center">
-                {/* Linha vertical conectando o ponto à linha principal */}
-                <div className="w-0.5 h-10 bg-blue-900 order-last"></div>
-                <div className="w-4 h-4 bg-blue-900 rounded-full relative z-10"></div>
-                <div className="absolute top-16 text-yellow-600 font-bold text-2xl">2025</div>
-                <div className="absolute -top-24 w-32 text-center text-gray-700">
-                    XXXXXXXXXXX
-                </div>
-                </div>
-                
-                {/* Ponto 2025.2 */}
-                <div className="relative flex flex-col items-center">
-                {/* Linha vertical conectando o ponto à linha principal */}
-                <div className="w-0.5 h-10 bg-blue-900"></div>
-                <div className="w-4 h-4 bg-blue-900 rounded-full relative z-10"></div>
-                <div className="absolute top-16 text-yellow-600 font-bold text-2xl">2025.2</div>
-                <div className="absolute top-24 w-32 text-center text-gray-700">
-                    XXXXXXXXXXX
-                </div>
-                </div>
-            </div>
-            </div>
-        </div>
-        </section>
 
 
         {/* Seção de Valores - margens ajustadas para combinar com outras seções */}
