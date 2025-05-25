@@ -167,15 +167,16 @@ export const Home = () => {
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-center h-full max-h-[70vh] mx-42 md:px-24 gap-42">
           <div className="w-full md:w-5/12 lg:w-4/12 space-y-6 text-white">
             <span className="inline-block px-4 py-1 rounded-full border border-white text-xs font-medium tracking-widest">
-              TRAVEL TO DELIVER
+              WHY CHOOSE US ?
             </span>
             <h2 className="text-4xl font-bold leading-tight">
-              Travel-Driven
+              A solução ideal para a
               <br />
-              Shipping
+              sua seguradora 
             </h2>
             <p className="text-lg">
-              Revolutionizing package delivery—connect, save, earn, and trust in a global network.
+              Revolucionamos o setor de seguros tornando a validação de sinistros automática uma realidade acessível para todas as seguradoras. 
+              Aumente a sua eficiência operacional e reduza custos com a Regula.ai.
             </p>
           </div>
           <div className="w-full md:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-6">
