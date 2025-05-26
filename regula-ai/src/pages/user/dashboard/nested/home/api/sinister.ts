@@ -2,20 +2,52 @@ import { config } from "@/config/config";
 
 export interface Sinistro {
   _id: string;
-  cnh: string;
-  cpf: string;
-  endereco: string;
-  data_acidente: string;
-  descricao: string;
+  user_id: string;
   status: string;
-  created_at: string;
+  accident_area: string;
+  sex: string;
+  fault: string;
+  police_report_filed: string;
+  witness_present: string;
+  agent_type: string;
+  vehicle_price: string;
+  age_of_vehicle: string;
+  base_policy: string;
+  age: number;
+  make: string;
+  month_claimed: string;
+  marital_status: string;
+  policy_type: string;
+  vehicle_category: string;
+  deductible: number;
+  age_of_policy_holder: number;
+  number_of_cars: number;
+  days_policy_accident: string;  // NOVO
+  days_policy_claim: string;     // NOVO
+  data: string;
 }
 
 export interface CreateSinistroDTO {
-  cnh: string;
-  endereco: string;
-  data_acidente: string; // ISO format date string
-  descricao: string;
+  accident_area: string;
+  sex: string;
+  fault: string;
+  police_report_filed: string;
+  witness_present: string;
+  agent_type: string;
+  vehicle_price: string;
+  age_of_vehicle: string;
+  base_policy: string;
+  age: number;
+  make: string;
+  month_claimed: string;
+  marital_status: string;
+  policy_type: string;
+  vehicle_category: string;
+  deductible: number;
+  age_of_policy_holder: number;
+  number_of_cars: number;
+  days_policy_accident: string;  // NOVO
+  days_policy_claim: string;     // NOVO
 }
 
 export async function getSinistros(): Promise<Sinistro[]> {
@@ -42,7 +74,6 @@ export async function createSinistro(
   const { apiBaseUrl } = config;
   const requestRoute = "/user/sinistro/create";
 
-  // O back-end agora não espera o campo cpf, então enviamos apenas os campos necessários
   const options = {
     method: "POST",
     headers: {
