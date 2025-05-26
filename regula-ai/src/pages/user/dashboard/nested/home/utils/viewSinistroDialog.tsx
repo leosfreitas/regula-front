@@ -1,5 +1,5 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogOverlay } from "@/components/ui/dialog";
-import { Car, FileText, User, Shield, X } from "lucide-react";
+import { Car, FileText, User, Shield } from "lucide-react";
 import { Sinistro } from "../api/sinister";
 
 interface ViewSinistroDialogProps {
@@ -122,16 +122,10 @@ export const ViewSinistroDialog = ({ isOpen, sinistro, onClose }: ViewSinistroDi
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogOverlay className="bg-black/50 fixed inset-0" />
       <DialogContent className="max-w-4xl bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200 max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="flex flex-row items-center justify-between">
+        <DialogHeader>
           <DialogTitle className="text-xl font-bold">
             Detalhes do Sinistro - {sinistro._id.slice(-8)}
           </DialogTitle>
-          <button
-            onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
         </DialogHeader>
         
         <div className="mt-6 space-y-6">

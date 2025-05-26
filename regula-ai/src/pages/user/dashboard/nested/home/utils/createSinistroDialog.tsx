@@ -245,30 +245,32 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
 
   const renderStepIndicator = () => {
     const steps = [
-      { number: 1, title: "Acidente", icon: <FileText className="w-4 h-4" /> },
-      { number: 2, title: "Veículo", icon: <Car className="w-4 h-4" /> },
-      { number: 3, title: "Motorista", icon: <User className="w-4 h-4" /> },
-      { number: 4, title: "Seguro", icon: <Shield className="w-4 h-4" /> }
+      { number: 1, title: "Acidente", icon: <FileText className="w-6 h-6" /> },
+      { number: 2, title: "Veículo", icon: <Car className="w-6 h-6" /> },
+      { number: 3, title: "Motorista", icon: <User className="w-6 h-6" /> },
+      { number: 4, title: "Seguro", icon: <Shield className="w-6 h-6" /> }
     ];
 
     return (
       <div className="flex justify-between mb-8">
         {steps.map((step, index) => (
           <div key={step.number} className="flex items-center">
-            <div className={`flex items-center justify-center w-10 h-10 rounded-full ${
+            <div className={`flex items-center justify-center w-12 h-12 rounded-full ${
               currentStep >= step.number ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-400'
             }`}>
-              {step.icon}
+              <div className="w-6 h-6">
+                {step.icon}
+              </div>
             </div>
-            <div className="ml-2">
-              <p className={`text-sm font-medium ${
+            <div className="ml-3">
+              <p className={`text-base font-medium ${
                 currentStep >= step.number ? 'text-gray-900' : 'text-gray-400'
               }`}>
                 {step.title}
               </p>
             </div>
             {index < steps.length - 1 && (
-              <div className={`w-full h-0.5 ml-2 ${
+              <div className={`w-16 h-0.5 ml-4 ${
                 currentStep > step.number ? 'bg-blue-500' : 'bg-gray-200'
               }`} />
             )}
@@ -794,37 +796,37 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogOverlay className="bg-black/50 fixed inset-0" />
-      <DialogContent className="max-w-3xl bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
+      <DialogContent className="max-w-5xl bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-8 z-50 border border-gray-200 max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold">Registrar Novo Sinistro</DialogTitle>
+          <DialogTitle className="text-2xl font-bold">Registrar Novo Sinistro</DialogTitle>
         </DialogHeader>
         
-        <form onSubmit={handleSubmit} className="mt-4">
+        <form onSubmit={handleSubmit} className="mt-6">
           {renderStepIndicator()}
           
-          <div className="min-h-[400px]">
+          <div className="min-h-[500px]">
             {renderFormStep()}
           </div>
 
-          <DialogFooter className="flex justify-between mt-6">
+          <DialogFooter className="flex justify-between mt-8">
             <div className="flex gap-2">
               {currentStep > 1 && (
                 <button
                   type="button"
                   onClick={handlePreviousStep}
-                  className="flex items-center gap-2 bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded cursor-pointer"
+                  className="flex items-center gap-2 bg-gray-300 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded cursor-pointer"
                 >
-                  <ChevronLeft className="w-4 h-4" />
+                  <ChevronLeft className="w-5 h-5" />
                   Anterior
                 </button>
               )}
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex gap-3">
               <button
                 type="button"
                 onClick={handleClose}
-                className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded cursor-pointer"
+                className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-3 px-6 rounded cursor-pointer"
                 disabled={isSubmitting}
               >
                 Cancelar
@@ -834,20 +836,20 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
                 <button
                   type="button"
                   onClick={handleNextStep}
-                  className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded cursor-pointer"
+                  className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded cursor-pointer"
                 >
                   Próximo
-                  <ChevronRight className="w-4 h-4" />
+                  <ChevronRight className="w-5 h-5" />
                 </button>
               ) : (
                 <button
                   type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded cursor-pointer"
+                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded cursor-pointer"
                   disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center">
-                      <div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full mr-2"></div>
+                      <div className="animate-spin h-5 w-5 border-b-2 border-white rounded-full mr-2"></div>
                       <span>Enviando...</span>
                     </div>
                   ) : (
