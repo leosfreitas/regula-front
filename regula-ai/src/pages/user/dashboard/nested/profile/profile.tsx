@@ -21,7 +21,6 @@ export const Profile = () => {
     fetchUserData();
   }, []);
 
-  // Limpa as mensagens de sucesso após 5 segundos
   useEffect(() => {
     if (successMessage) {
       const timer = setTimeout(() => {
@@ -100,7 +99,7 @@ export const Profile = () => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+            className="shadow appearance-none border rounded w-full py-5 px-5 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
@@ -114,7 +113,7 @@ export const Profile = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+            className="shadow appearance-none border rounded w-full py-5 px-5 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
             required
           />
         </div>
@@ -128,7 +127,7 @@ export const Profile = () => {
             type="text"
             value={cpf}
             onChange={(e) => setCpf(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+            className="shadow appearance-none border rounded w-full py-5 px-5 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
           />
         </div>
         
@@ -141,7 +140,7 @@ export const Profile = () => {
             type="text"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-3 px-4 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
+            className="shadow appearance-none border rounded w-full py-5 px-5 text-lg text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
           />
         </div>
       </div>
@@ -206,7 +205,7 @@ export const Profile = () => {
         </button>
         <button
           onClick={() => setIsResetDialogOpen(true)}
-          className="bg-purple-500 hover:bg-purple-600 text-white py-3 px-6 rounded text-base font-bold cursor-pointer"
+          className="bg-red-500 hover:bg-red-600 text-white py-3 px-6 rounded text-base font-bold cursor-pointer"
         >
           Alterar Senha
         </button>
@@ -254,10 +253,9 @@ export const Profile = () => {
         )}
       </div>
 
-      {/* Password Reset Dialog */}
       <Dialog open={isResetDialogOpen} onOpenChange={setIsResetDialogOpen}>
         <DialogOverlay className="bg-black/50 fixed inset-0" />
-        <DialogContent className="max-w-md bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
+        <DialogContent className="max-w-lg bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
           <DialogHeader>
             <DialogTitle className="text-xl font-bold">Alteração de Senha</DialogTitle>
           </DialogHeader>
@@ -285,7 +283,7 @@ export const Profile = () => {
             <button
               type="button"
               onClick={handlePasswordReset}
-              className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-6 rounded cursor-pointer text-base"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded cursor-pointer text-base"
               disabled={isResetSending}
             >
               {isResetSending ? (

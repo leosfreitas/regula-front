@@ -147,7 +147,7 @@ export const Contact = () => {
                         <button
                           type="submit"
                           disabled={loading}
-                          className="w-full bg-blue-900 text-white py-4 px-6 rounded-lg hover:bg-blue-800 transition duration-300 flex items-center justify-center text-lg"
+                          className="w-full bg-blue-900 text-white py-4 px-6 rounded-lg hover:bg-blue-800 transition duration-300 flex items-center justify-center text-lg cursor-pointer"
                         >
                           {loading ? (
                             <span className="inline-flex items-center">

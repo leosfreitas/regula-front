@@ -1,8 +1,10 @@
 import { Header } from "../../components/header";
 import { Footer } from "../../components/footer";
 import { useState, useEffect, useRef } from "react";
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
+  const navigate = useNavigate();
   const statsRef = useRef<HTMLDivElement>(null);
   const [countUp, setCountUp] = useState({
     productivity: 0,
@@ -93,7 +95,10 @@ export const Home = () => {
               <br className="md:hidden" />
               segurança.
             </p>
-            <button className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 transition">
+            <button 
+              className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 transition cursor-pointer"
+              onClick={() => navigate("/contact")}
+              >
               Entre em Contato
             </button>
           </div>

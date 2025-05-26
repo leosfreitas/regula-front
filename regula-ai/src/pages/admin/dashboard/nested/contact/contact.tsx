@@ -292,8 +292,8 @@ export const Contact = () => {
                           onClick={() => handleStatusChange(contact)}
                           className={`${
                             contact.status === "S" 
-                              ? "bg-yellow-500 hover:bg-yellow-600" 
-                              : "bg-green-700 hover:bg-green-800"
+                              ? "bg-slate-600 hover:bg-slate-700" 
+                              : "bg-slate-600 hover:bg-slate-700"
                           } text-white py-2 px-4 rounded transition-colors cursor-pointer`}
                           disabled={isUpdating}
                         >
@@ -315,7 +315,6 @@ export const Contact = () => {
         )}
       </div>
 
-      {/* View Contact Dialog */}
       <Dialog open={isViewDialogOpen} onOpenChange={setIsViewDialogOpen}>
         <DialogOverlay className="bg-black/50 fixed inset-0" />
         <DialogContent className="max-w-2xl bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
@@ -377,8 +376,8 @@ export const Contact = () => {
                   onClick={() => selectedContact && handleStatusChange(selectedContact)}
                   className={`${
                     selectedContact?.status === "S" 
-                      ? "bg-yellow-500 hover:bg-yellow-600" 
-                      : "bg-green-700 hover:bg-green-800"
+                      ? "bg-slate-600 hover:bg-slate-700" 
+                      : "bg-slate-600 hover:bg-slate-700"
                   } text-white font-bold py-2 px-4 rounded cursor-pointer`}
                   disabled={isUpdating}
                 >
@@ -404,7 +403,6 @@ export const Contact = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Delete Confirmation Dialog */}
       <Dialog open={deleteConfirmOpen} onOpenChange={setDeleteConfirmOpen}>
         <DialogOverlay className="bg-black/50 fixed inset-0" />
         <DialogContent className="max-w-md bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
