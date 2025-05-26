@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import { 
   getAllSinistros, 
   getSinistrosByUser,
-  updateSinistroStatus,
+  analyzeSinistro,
   Sinistro,
-  UpdateSinistroDTO
+  AnalyzeSinistroResponse
 } from "./api/sinister";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogOverlay } from "@/components/ui/dialog";
 
@@ -15,14 +13,15 @@ export const Home = () => {
   const [filteredSinistros, setFilteredSinistros] = useState<Sinistro[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [statusFilter, setStatusFilter] = useState("Aberto");
-  const [cpfFilter, setCpfFilter] = useState("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState("");
+  const [userIdFilter, setUserIdFilter] = useState("");
+  const [sinistroIdFilter, setSinistroIdFilter] = useState("");
   const [isAnalyzeDialogOpen, setIsAnalyzeDialogOpen] = useState(false);
   const [selectedSinistro, setSelectedSinistro] = useState<Sinistro | null>(null);
-  const [newStatus, setNewStatus] = useState<string>("");
-  const [isUpdating, setIsUpdating] = useState(false);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
-  const statuses = ["Aberto", "Em análise", "Negado", "Aprovado", "Pago"];
+  const statuses = ["Aberto", "Análise Manual Necessária", "Negado", "Aprovado"];
 
   useEffect(() => {
     loadSinistros();
@@ -30,7 +29,17 @@ export const Home = () => {
 
   useEffect(() => {
     applyFilters();
-  }, [sinistros, statusFilter, cpfFilter]);
+  }, [sinistros, statusFilter, userIdFilter, sinistroIdFilter]);
+
+  useEffect(() => {
+    if (successMessage || error) {
+      const timer = setTimeout(() => {
+        setSuccessMessage(null);
+        setError(null);
+      }, 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [successMessage, error]);
 
   const loadSinistros = async () => {
     try {
@@ -42,31 +51,6 @@ export const Home = () => {
     } catch (err: any) {
       setError("Não foi possível carregar os sinistros. Por favor, tente novamente.");
       console.error("Erro ao carregar sinistros:", err);
-      // Initialize with empty arrays to prevent map errors
-      setSinistros([]);
-      setFilteredSinistros([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const loadSinistrosByCpf = async (cpf: string) => {
-    if (!cpf.trim()) {
-      await loadSinistros();
-      return;
-    }
-    
-    try {
-      setIsLoading(true);
-      // Assumindo que você pode adaptar getSinistrosByUser para buscar por CPF
-      // ou criar uma nova função na API
-      const data = await getSinistrosByUser(cpf);
-      setSinistros(data);
-      setFilteredSinistros(data);
-      setError(null);
-    } catch (err: any) {
-      setError("Não foi possível carregar os sinistros. Por favor, tente novamente.");
-      console.error("Erro ao carregar sinistros por CPF:", err);
       setSinistros([]);
       setFilteredSinistros([]);
     } finally {
@@ -89,10 +73,17 @@ export const Home = () => {
       );
     }
 
-    if (cpfFilter.trim()) {
-      const searchLower = cpfFilter.toLowerCase();
+    if (userIdFilter.trim()) {
+      const searchLower = userIdFilter.toLowerCase();
       result = result.filter(sinistro => 
-        sinistro.cpf.toLowerCase().includes(searchLower)
+        sinistro.user_id?.toLowerCase().includes(searchLower)
+      );
+    }
+
+    if (sinistroIdFilter.trim()) {
+      const searchLower = sinistroIdFilter.toLowerCase();
+      result = result.filter(sinistro => 
+        sinistro._id.toLowerCase().includes(searchLower)
       );
     }
     
@@ -103,70 +94,62 @@ export const Home = () => {
     setStatusFilter(e.target.value);
   };
 
-  const handleCpfFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setCpfFilter(e.target.value);
+  const handleUserIdFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserIdFilter(e.target.value);
   };
 
-  const handleCpfFilterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    loadSinistrosByCpf(cpfFilter);
+  const handleSinistroIdFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSinistroIdFilter(e.target.value);
   };
 
   const handleClearFilters = () => {
-    setStatusFilter("Aberto");
-    setCpfFilter("");
+    setStatusFilter("");
+    setUserIdFilter("");
+    setSinistroIdFilter("");
     loadSinistros();
   };
 
   const handleAnalyzeSinistro = (sinistro: Sinistro) => {
     setSelectedSinistro(sinistro);
-    setNewStatus(sinistro.status);
     setIsAnalyzeDialogOpen(true);
   };
 
-  const handleStatusSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!selectedSinistro || !newStatus) {
+  const handleAnalyzeSubmit = async () => {
+    if (!selectedSinistro) {
       return;
     }
     
     try {
-      setIsUpdating(true);
-      await updateSinistroStatus(selectedSinistro._id, { 
-        status: newStatus as "Aberto" | "Em análise" | "Negado" | "Aprovado" | "Pago"
-      });
+      setIsAnalyzing(true);
+      setError(null);
       
-      // Update the status in the local state
-      const updatedSinistros = sinistros.map(s => 
-        s._id === selectedSinistro._id ? { ...s, status: newStatus } : s
-      );
+      const result: AnalyzeSinistroResponse = await analyzeSinistro(selectedSinistro._id);
       
-      setSinistros(updatedSinistros);
-      setFilteredSinistros(prevFiltered => 
-        prevFiltered.map(s => 
-          s._id === selectedSinistro._id ? { ...s, status: newStatus } : s
-        )
-      );
+      if (result.status === "success" && result.resultado) {
+        const updatedSinistros = sinistros.map(s => 
+          s._id === selectedSinistro._id ? { ...s, status: result.resultado! } : s
+        );
+        
+        setSinistros(updatedSinistros);
+        setFilteredSinistros(prevFiltered => 
+          prevFiltered.map(s => 
+            s._id === selectedSinistro._id ? { ...s, status: result.resultado! } : s
+          )
+        );
+        
+        setSuccessMessage(`Sinistro analisado com sucesso. Novo status: ${result.resultado}`);
+      } else {
+        setError(result.message || "Erro na análise do sinistro");
+      }
       
       setIsAnalyzeDialogOpen(false);
       setSelectedSinistro(null);
-      setNewStatus("");
       
     } catch (err: any) {
-      setError("Não foi possível atualizar o status. Por favor, tente novamente.");
-      console.error("Erro ao atualizar status:", err);
+      setError(err.message || "Não foi possível analisar o sinistro. Por favor, tente novamente.");
+      console.error("Erro ao analisar sinistro:", err);
     } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const formatDate = (dateString: string) => {
-    try {
-      const date = new Date(dateString);
-      return format(date, "dd/MM/yyyy", { locale: ptBR });
-    } catch (e) {
-      return dateString;
+      setIsAnalyzing(false);
     }
   };
 
@@ -174,8 +157,8 @@ export const Home = () => {
     switch (status.toUpperCase()) {
       case "ABERTO":
         return "bg-blue-100 text-blue-800";
-      case "EM ANÁLISE":
-      case "EM ANALISE":
+      case "ANÁLISE MANUAL NECESSÁRIA":
+      case "ANALISE MANUAL NECESSARIA":
         return "bg-yellow-100 text-yellow-800";
       case "NEGADO":
         return "bg-red-100 text-red-800";
@@ -195,11 +178,9 @@ export const Home = () => {
           <h1 className="text-3xl font-bold text-gray-800">Administração de Sinistros</h1>
         </div>
 
-        {/* Filters */}
         <div className="mb-8 bg-gray-50 p-6 rounded-lg">
           <h2 className="text-xl font-semibold text-gray-800 mb-4">Filtros</h2>
           <div className="flex flex-wrap gap-4">
-            {/* Status Filter */}
             <div className="w-full md:w-auto">
               <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="status-filter">
                 Status
@@ -219,26 +200,34 @@ export const Home = () => {
               </select>
             </div>
 
-            {/* CPF Filter - changed from nameFilter */}
-            <div className="w-full md:w-auto flex-grow">
-              <form onSubmit={handleCpfFilterSubmit} className="flex flex-col md:flex-row gap-2">
-                <div className="flex-grow">
-                  <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="cpf-filter">
-                    CPF
-                  </label>
-                  <input
-                    id="cpf-filter"
-                    type="text"
-                    value={cpfFilter}
-                    onChange={handleCpfFilterChange}
-                    placeholder="Digite o CPF"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
-                  />
-                </div>
-              </form>
+            <div className="w-full md:w-auto">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="user-id-filter">
+                ID do Usuário
+              </label>
+              <input
+                id="user-id-filter"
+                type="text"
+                value={userIdFilter}
+                onChange={handleUserIdFilterChange}
+                placeholder="Digite o ID do usuário"
+                className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+              />
             </div>
 
-            {/* Clear Filters */}
+            <div className="w-full md:w-auto">
+              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="sinistro-id-filter">
+                ID do Sinistro
+              </label>
+              <input
+                id="sinistro-id-filter"
+                type="text"
+                value={sinistroIdFilter}
+                onChange={handleSinistroIdFilterChange}
+                placeholder="Digite o ID do sinistro"
+                className="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500 w-full md:w-64"
+              />
+            </div>
+
             <div className="w-full md:w-auto flex items-end">
               <button
                 onClick={handleClearFilters}
@@ -256,6 +245,12 @@ export const Home = () => {
           </div>
         )}
 
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-6 py-4 rounded mb-6">
+            {successMessage}
+          </div>
+        )}
+
         {isLoading ? (
           <div className="flex justify-center items-center h-64">
             <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
@@ -270,15 +265,11 @@ export const Home = () => {
           </div>
         ) : (
           <div className="rounded-lg border border-gray-200">
-            {/* Tabela com scroll */}
             <div className="h-96 overflow-auto">
               <table className="min-w-full bg-white">
                 <thead className="sticky top-0 bg-gray-100 z-10">
                   <tr className="text-gray-600 uppercase text-sm leading-normal">
-                    <th className="py-4 px-6 text-left">Data</th>
-                    <th className="py-4 px-6 text-left">CPF</th>
-                    <th className="py-4 px-6 text-left">CNH</th>
-                    <th className="py-4 px-6 text-left">Endereço</th>
+                    <th className="py-4 px-6 text-left">ID</th>
                     <th className="py-4 px-6 text-left">Status</th>
                     <th className="py-4 px-6 text-center">Ações</th>
                   </tr>
@@ -286,22 +277,25 @@ export const Home = () => {
                 <tbody className="text-gray-600 text-base">
                   {filteredSinistros.map((sinistro) => (
                     <tr key={sinistro._id} className="border-b border-gray-200 hover:bg-gray-50">
-                      <td className="py-4 px-6 font-medium">{formatDate(sinistro.data_acidente)}</td>
-                      <td className="py-4 px-6">{sinistro.cpf}</td>
-                      <td className="py-4 px-6">{sinistro.cnh}</td>
-                      <td className="py-4 px-6">{sinistro.endereco}</td>
+                      <td className="py-4 px-6 font-medium">{sinistro._id.slice(-8)}</td>
                       <td className="py-4 px-6">
                         <span className={`px-3 py-2 rounded-full text-sm font-medium ${getStatusColor(sinistro.status)}`}>
                           {sinistro.status}
                         </span>
                       </td>
                       <td className="py-4 px-6 text-center">
-                        <button 
-                          onClick={() => handleAnalyzeSinistro(sinistro)}
-                          className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors cursor-pointer"
-                        >
-                          Analisar
-                        </button>
+                        {sinistro.status.toLowerCase() === "aberto" ? (
+                          <button 
+                            onClick={() => handleAnalyzeSinistro(sinistro)}
+                            className="bg-blue-500 hover:bg-blue-600 text-white py-2 px-4 rounded transition-colors cursor-pointer"
+                          >
+                            Analisar
+                          </button>
+                        ) : (
+                          <span className="text-gray-400 text-sm">
+                            Não disponível
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}
@@ -312,44 +306,33 @@ export const Home = () => {
         )}
       </div>
 
-      {/* Analyze Dialog usando componentes Dialog do shadcn/ui */}
       <Dialog open={isAnalyzeDialogOpen} onOpenChange={setIsAnalyzeDialogOpen}>
         <DialogOverlay className="bg-black/50 fixed inset-0" />
         <DialogContent className="max-w-md bg-white rounded-lg shadow-lg fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 p-6 z-50 border border-gray-200">
           <DialogHeader>
-            <DialogTitle className="text-xl font-bold">Análise de Sinistro</DialogTitle>
+            <DialogTitle className="text-xl font-bold">Análise de Sinistro com IA</DialogTitle>
           </DialogHeader>
           
           {selectedSinistro && (
-            <form onSubmit={handleStatusSubmit}>
+            <div>
               <p className="text-gray-600 mb-6">
-                Sinistro #{selectedSinistro._id.substring(0, 8)} - {formatDate(selectedSinistro.data_acidente)}
+                Sinistro #{selectedSinistro._id.slice(-8)}
               </p>
               
-              <div className="mb-6">
-                <label className="block text-gray-700 text-base font-bold mb-2" htmlFor="status">
-                  Status
-                </label>
-                <select
-                  id="status"
-                  value={newStatus}
-                  onChange={(e) => setNewStatus(e.target.value)}
-                  className="shadow border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-blue-500"
-                  required
-                >
-                  <option value="" disabled>Selecione um status</option>
-                  {statuses.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
+              <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <h3 className="font-semibold text-blue-800 mb-2">Análise do Sinistro com Inteligência Artificial</h3>
+                <p className="text-blue-700 text-sm">
+                  O sistema analisará automaticamente este sinistro 
+                  para determinar o status mais apropriado com base nos dados fornecidos.
+                </p>
               </div>
 
-              {/* Space for future AI implementation */}
-              <div className="mb-6 p-4 bg-gray-50 rounded-lg border border-dashed border-gray-300">
-                <p className="text-gray-500 text-center">
-                  Espaço reservado para implementação de IA
+              <div className="mb-6 p-4 bg-gray-50 rounded-lg">
+                <p className="text-gray-700 text-sm">
+                  <strong>Status atual:</strong> 
+                  <span className={`ml-2 px-2 py-1 rounded text-xs ${getStatusColor(selectedSinistro.status)}`}>
+                    {selectedSinistro.status}
+                  </span>
                 </p>
               </div>
 
@@ -361,26 +344,27 @@ export const Home = () => {
                     setSelectedSinistro(null);
                   }}
                   className="bg-gray-300 hover:bg-gray-400 text-black font-bold py-2 px-4 rounded cursor-pointer"
-                  disabled={isUpdating}
+                  disabled={isAnalyzing}
                 >
                   Cancelar
                 </button>
                 <button
-                  type="submit"
+                  type="button"
+                  onClick={handleAnalyzeSubmit}
                   className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer"
-                  disabled={isUpdating}
+                  disabled={isAnalyzing}
                 >
-                  {isUpdating ? (
+                  {isAnalyzing ? (
                     <div className="flex items-center">
                       <div className="animate-spin h-4 w-4 border-b-2 border-white rounded-full mr-2"></div>
-                      <span>Atualizando...</span>
+                      <span>Analisando...</span>
                     </div>
                   ) : (
-                    "Salvar"
+                    "Iniciar Análise"
                   )}
                 </button>
               </DialogFooter>
-            </form>
+            </div>
           )}
         </DialogContent>
       </Dialog>

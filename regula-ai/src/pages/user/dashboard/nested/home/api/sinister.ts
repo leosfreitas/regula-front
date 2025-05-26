@@ -15,15 +15,14 @@ export interface Sinistro {
   base_policy: string;
   age: number;
   make: string;
-  month_claimed: string;
   marital_status: string;
   policy_type: string;
   vehicle_category: string;
   deductible: number;
   age_of_policy_holder: number;
   number_of_cars: number;
-  days_policy_accident: string;  // NOVO
-  days_policy_claim: string;     // NOVO
+  days_policy_accident: string;
+  days_policy_claim: string;
   data: string;
 }
 
@@ -39,15 +38,14 @@ export interface CreateSinistroDTO {
   base_policy: string;
   age: number;
   make: string;
-  month_claimed: string;
   marital_status: string;
   policy_type: string;
   vehicle_category: string;
   deductible: number;
   age_of_policy_holder: number;
   number_of_cars: number;
-  days_policy_accident: string;  // NOVO
-  days_policy_claim: string;     // NOVO
+  days_policy_accident: string;
+  days_policy_claim: string;
 }
 
 export async function getSinistros(): Promise<Sinistro[]> {

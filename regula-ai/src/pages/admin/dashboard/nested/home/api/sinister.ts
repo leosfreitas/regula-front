@@ -2,24 +2,16 @@ import { config } from "@/config/config";
 
 export interface Sinistro {
   _id: string;
-  cnh: string;
-  cpf: string;
-  endereco: string;
-  data_acidente: string;
-  descricao: string;
   status: string;
-  created_at: string;
-  user_id?: string; // Optional field, may be present in admin view
+  user_id?: string;
 }
 
-export interface UpdateSinistroDTO {
-  status: "Aberto" | "Em análise" | "Negado" | "Aprovado" | "Pago";
+export interface AnalyzeSinistroResponse {
+  status: "success" | "error";
+  resultado?: string;
+  message?: string;
 }
 
-/**
- * Get all sinistros for admin view
- * @returns {Promise<Sinistro[]>} Array of sinistros
- */
 export async function getAllSinistros(): Promise<Sinistro[]> {
   const { apiBaseUrl } = config;
   const requestRoute = "/admin/get/sinistros";
@@ -39,11 +31,6 @@ export async function getAllSinistros(): Promise<Sinistro[]> {
   return data.sinistros || data;
 }
 
-/**
- * Get sinistros by user ID
- * @param {string} userId - ID of the user
- * @returns {Promise<Sinistro[]>} Array of sinistros for the specified user
- */
 export async function getSinistrosByUser(userId: string): Promise<Sinistro[]> {
   const { apiBaseUrl } = config;
   const requestRoute = `/admin/get/sinistros/${userId}`;
@@ -63,35 +50,22 @@ export async function getSinistrosByUser(userId: string): Promise<Sinistro[]> {
   return data.sinistros || data;
 }
 
-/**
- * Update sinistro status
- * @param {string} sinistroId - ID of the sinistro to update
- * @param {UpdateSinistroDTO} updateData - Data for update (status)
- * @returns {Promise<Object>} Result with response and response data
- */
-export async function updateSinistroStatus(
-  sinistroId: string,
-  updateData: UpdateSinistroDTO
-): Promise<{ response: Response; responseData: any }> {
+export async function analyzeSinistro(sinistroId: string): Promise<AnalyzeSinistroResponse> {
   const { apiBaseUrl } = config;
-  const requestRoute = `/admin/update/sinistro/${sinistroId}`;
+  const requestRoute = `/admin/sinistro/analyze/${sinistroId}`;
 
   const options = {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(updateData),
+    method: "POST",
     credentials: "include" as RequestCredentials,
   };
 
   const response = await fetch(apiBaseUrl + requestRoute, options);
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
-    throw new Error(errorData.message || "Erro ao atualizar status do sinistro");
+    throw new Error(errorData.message || "Erro ao analisar sinistro");
   }
   
   const responseData = await response.json();
-  console.log(`Status do sinistro ${sinistroId} atualizado com sucesso:`, responseData);
-  return { response, responseData };
+  console.log(`Sinistro ${sinistroId} analisado com sucesso:`, responseData);
+  return responseData;
 }
