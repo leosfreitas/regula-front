@@ -126,37 +126,37 @@ export const Home = () => {
 
           <div
             ref={statsRef}
-            className="flex flex-col md:flex-row justify-between items-center gap-6 py-12"
+            className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-y-10 gap-x-4 py-12 place-items-center"
           >
-            <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+            <div className="text-center">
+              <p className="text-3xl md:text-5xl font-bold text-blue-900">
                 +{countUp.productivity}%
               </p>
-              <p className="text-base md:text-xl text-gray-700">
+              <p className="text-base md:text-lg text-gray-700">
                 Produtividade
               </p>
             </div>
-            <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+            <div className="text-center">
+              <p className="text-3xl md:text-5xl font-bold text-blue-900">
                 {countUp.cost}%
               </p>
-              <p className="text-base md:text-xl text-gray-700">
+              <p className="text-base md:text-lg text-gray-700">
                 Diminuição dos gastos
               </p>
             </div>
-            <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+            <div className="text-center">
+              <p className="text-3xl md:text-5xl font-bold text-blue-900">
                 +{countUp.satisfaction}%
               </p>
-              <p className="text-base md:text-xl text-gray-700">
+              <p className="text-base md:text-lg text-gray-700">
                 Satisfação dos clientes
               </p>
             </div>
-            <div>
-              <p className="text-3xl md:text-6xl font-bold text-blue-900">
+            <div className="text-center">
+              <p className="text-3xl md:text-5xl font-bold text-blue-900">
                 +{countUp.partnerships}
               </p>
-              <p className="text-base md:text-xl text-gray-700">Parcerias</p>
+              <p className="text-base md:text-lg text-gray-700">Parcerias</p>
             </div>
           </div>
         </div>
@@ -171,8 +171,8 @@ export const Home = () => {
         <div className="absolute inset-0 bg-black/50" />
         <div className="relative z-10 max-w-[90rem] mx-auto flex flex-col lg:flex-row items-start gap-20 px-8">
           <div className="w-full lg:w-5/12 space-y-6 text-white">
-            <span className="inline-block px-4 py-1 rounded-full border border-white text-xs font-medium tracking-widest">
-              WHY CHOOSE US ?
+            <span className="inline-block px-4 py-1 rounded-full border border-white text-xs font-medium tracking-widest uppercase">
+              O futuro está aqui
             </span>
             <h2 className="text-4xl font-bold leading-tight">
               A solução ideal para a sua seguradora
@@ -252,18 +252,18 @@ export const Home = () => {
           </h2>
 
           <div className="relative">
-            <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-px bg-gray-300" />
+            <div className="hidden md:block absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-px bg-gray-300" />
             <div
-              className="absolute left-0 top-1/2 transform -translate-y-1/2 h-[2px] bg-blue-800"
+              className="hidden md:block absolute left-0 top-1/2 transform -translate-y-1/2 h-[3px] rounded-3xl bg-blue-800"
               style={{
                 width: fill ? "100%" : "0%",
                 transition: "width 5s ease-out",
               }}
             />
-            <div className="grid grid-cols-3 gap-x-8">
-              <div className="relative flex flex-col items-center">
-                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
-                <div className="mt-36 text-center">
+            <div className="flex flex-col md:grid md:grid-cols-3 gap-16 md:gap-x-8">
+              <div className="relative flex flex-col items-center text-center">
+                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 mb-4 md:mb-0 md:absolute md:top-1/2 md:-translate-y-1/2" />
+                <div className="md:mt-40">
                   <h3 className="font-semibold text-xl mb-2">
                     1. Envio de Documentos
                   </h3>
@@ -274,9 +274,9 @@ export const Home = () => {
                 </div>
               </div>
 
-              <div className="relative flex flex-col items-center">
-                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
-                <div className="mb-36 text-center">
+              <div className="relative flex flex-col items-center text-center">
+                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 mb-4 md:mb-0 md:absolute md:top-1/2 md:-translate-y-1/2" />
+                <div className="md:mb-40">
                   <h3 className="font-semibold text-xl mb-2">
                     2. Processamento Automático
                   </h3>
@@ -286,9 +286,9 @@ export const Home = () => {
                 </div>
               </div>
 
-              <div className="relative flex flex-col items-center">
-                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
-                <div className="mt-36 text-center">
+              <div className="relative flex flex-col items-center text-center">
+                <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 mb-4 md:mb-0 md:absolute md:top-1/2 md:-translate-y-1/2" />
+                <div className="md:mt-40">
                   <h3 className="font-semibold text-xl mb-2">
                     3. Aprovação Instantânea
                   </h3>
