@@ -1,7 +1,13 @@
 import { Header } from "../../components/header";
 import { Footer } from "../../components/footer";
 import { useState, useEffect, useRef } from "react";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
+import {
+  Lightning,
+  ChartBar,
+  CurrencyCircleDollar,
+  ShieldCheck,
+} from "phosphor-react";
 
 export const Home = () => {
   const navigate = useNavigate();
@@ -29,9 +35,8 @@ export const Home = () => {
           next.cost === 38 &&
           next.satisfaction === 20 &&
           next.partnerships === 10
-        ) {
+        )
           clearInterval(intervalId);
-        }
         return next;
       });
     }, 20);
@@ -71,14 +76,13 @@ export const Home = () => {
     <>
       <Header />
 
-      {/* Hero */}
       <div className="relative w-full h-[90vh]">
         <img
           src="/landing_page/background1.png"
           alt="Landing"
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black opacity-50" />
+        <div className="absolute inset-0 bg-black/50" />
         <div className="absolute inset-0 flex items-center px-8 md:px-24">
           <div>
             <h1 className="text-white text-4xl md:text-6xl font-bold mb-4 leading-tight">
@@ -95,17 +99,16 @@ export const Home = () => {
               <br className="md:hidden" />
               segurança.
             </p>
-            <button 
+            <button
               className="bg-blue-900 text-white px-6 py-3 rounded-md hover:bg-blue-800 transition cursor-pointer"
               onClick={() => navigate("/contact")}
-              >
+            >
               Entre em Contato
             </button>
           </div>
         </div>
       </div>
 
-      {/* Sobre */}
       <section className="py-18 px-4 bg-white">
         <div className="w-[90%] mx-auto">
           <h2 className="text-4xl font-medium mb-6 text-gray-900">Regula.ai</h2>
@@ -121,7 +124,6 @@ export const Home = () => {
             Saiba mais &gt;
           </a>
 
-          {/* Stats */}
           <div
             ref={statsRef}
             className="flex flex-col md:flex-row justify-between items-center gap-6 py-12"
@@ -160,108 +162,82 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Imagem de transição com card */}
-      <section className="relative w-full h-[70vh]">
+      <section className="relative w-full py-40">
         <img
           src="/landing_page/background2.png"
           alt="Background"
           className="absolute inset-0 w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-black opacity-50 " />
-        
-        <div className="relative z-10 flex flex-col md:flex-row items-center justify-center h-full max-h-[70vh] mx-42 md:px-24 gap-42">
-          <div className="w-full md:w-5/12 lg:w-4/12 space-y-6 text-white">
+        <div className="absolute inset-0 bg-black/50" />
+        <div className="relative z-10 max-w-[90rem] mx-auto flex flex-col lg:flex-row items-start gap-20 px-8">
+          <div className="w-full lg:w-5/12 space-y-6 text-white">
             <span className="inline-block px-4 py-1 rounded-full border border-white text-xs font-medium tracking-widest">
               WHY CHOOSE US ?
             </span>
             <h2 className="text-4xl font-bold leading-tight">
-              A solução ideal para a
-              <br />
-              sua seguradora 
+              A solução ideal para a sua seguradora
             </h2>
             <p className="text-lg">
-              Revolucionamos o setor de seguros tornando a validação de sinistros automática uma realidade acessível para todas as seguradoras. 
-              Aumente a sua eficiência operacional e reduza custos com a Regula.ai.
+              Revolucionamos o setor de seguros tornando a validação de sinistros
+              automática uma realidade acessível para todas as seguradoras.
+              Aumente a sua eficiência operacional e reduza custos com a
+              Regula.ai.
             </p>
           </div>
-          <div className="w-full md:w-7/12 grid grid-cols-1 sm:grid-cols-2 gap-6">
-            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
-              <svg
-                className="w-8 h-8 stroke-gray-900"
-                fill="none"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20" />
-              </svg>
+
+          <div className="w-full lg:flex-1 grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="flex items-start gap-4 p-6 bg-white backdrop-blur-md rounded-xl border border-gray-100">
+              <Lightning size={32} weight="duotone" className="text-blue-900" />
               <div>
-                <h3 className="font-semibold text-lg mb-1 text-gray-900">Worldwide</h3>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">
+                  Validação Automática
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Send packages globally from any city with matching travelers.
+                  Classifique e valide documentos em segundos usando IA.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
-              <svg
-                className="w-8 h-8 stroke-gray-900"
-                fill="none"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <circle cx="12" cy="12" r="8" />
-                <path d="M8 12h8M8 15h8M8 9h8" />
-              </svg>
+            <div className="flex items-start gap-4 p-6 bg-white/90 backdrop-blur-md rounded-xl border border-gray-100">
+              <ChartBar size={32} weight="duotone" className="text-blue-900" />
               <div>
-                <h3 className="font-semibold text-lg mb-1 text-gray-900">Profitable</h3>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">
+                  Eficiência Operacional
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Earn money on travel and fund future trips at reduced costs.
+                  Libere equipes de tarefas repetitivas e foque na estratégia.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
-              <svg
-                className="w-8 h-8 stroke-gray-900"
-                fill="none"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path d="M3 3v18h18" />
-                <path d="M8 16l3-3 2 2 5-5" />
-              </svg>
+            <div className="flex items-start gap-4 p-6 bg-white/90 backdrop-blur-md rounded-xl border border-gray-100">
+              <CurrencyCircleDollar
+                size={32}
+                weight="duotone"
+                className="text-blue-900"
+              />
               <div>
-                <h3 className="font-semibold text-lg mb-1 text-gray-900">Economical</h3>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">
+                  Redução de Custos
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Reduce shipping costs by matching travelers to carry packages.
+                  Diminua perdas com fraudes e otimize recursos.
                 </p>
               </div>
             </div>
 
-            <div className="p-6 bg-white rounded-xl border border-gray-100 flex items-start space-x-4">
-              <svg
-                className="w-8 h-8 stroke-gray-900"
-                fill="none"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 3l8 4v5a8 8 0 01-16 0V7l8-4z" />
-                <path d="M12 11v4" />
-                <path d="M10 13h4" />
-              </svg>
+            <div className="flex items-start gap-4 p-6 bg-white/90 backdrop-blur-md rounded-xl border border-gray-100">
+              <ShieldCheck
+                size={32}
+                weight="duotone"
+                className="text-blue-900"
+              />
               <div>
-                <h3 className="font-semibold text-lg mb-1 text-gray-900">Secure Payment</h3>
+                <h3 className="font-semibold text-lg mb-1 text-gray-900">
+                  Conformidade Segura
+                </h3>
                 <p className="text-gray-600 text-sm">
-                  Payments are safely held until delivery or refunded if the trip is canceled.
+                  Dados protegidos e processos auditáveis de ponta a ponta.
                 </p>
               </div>
             </div>
@@ -269,7 +245,6 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Como Funciona */}
       <section ref={funcRef} className="py-20 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold mb-16 text-center text-gray-900">
@@ -278,7 +253,6 @@ export const Home = () => {
 
           <div className="relative">
             <div className="absolute inset-x-0 top-1/2 transform -translate-y-1/2 h-px bg-gray-300" />
-
             <div
               className="absolute left-0 top-1/2 transform -translate-y-1/2 h-[2px] bg-blue-800"
               style={{
@@ -286,7 +260,6 @@ export const Home = () => {
                 transition: "width 5s ease-out",
               }}
             />
-
             <div className="grid grid-cols-3 gap-x-8">
               <div className="relative flex flex-col items-center">
                 <span className="w-8 h-8 rounded-full bg-black border-4 border-gray-200 absolute top-1/2 transform -translate-y-1/2" />
@@ -320,8 +293,7 @@ export const Home = () => {
                     3. Aprovação Instantânea
                   </h3>
                   <p className="text-gray-600">
-                    Receba o resultado final e siga diretamente para o
-                    pagamento.
+                    Receba o resultado final e siga diretamente para o pagamento.
                   </p>
                 </div>
               </div>
@@ -330,7 +302,6 @@ export const Home = () => {
         </div>
       </section>
 
-      {/* Perguntas Frequentes */}
       <section className="py-16 px-6 md:px-24 bg-gray-50">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-8">Perguntas Frequentes</h2>
