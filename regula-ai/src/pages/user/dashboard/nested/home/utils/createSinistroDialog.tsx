@@ -665,9 +665,6 @@ useEffect(() => {
 
       case 4:
         return (
-          console.log("Renderizando passo 4"),
-          console.log("Dados do formulário:", formData),
-          console.log("Erros do formulário:", formErrors),
           <div className="space-y-4">
             <h3 className="text-lg font-semibold mb-4">Informações do Seguro</h3>
             
