@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogOverlay } from "@/components/ui/dialog";
 import { Info, ChevronRight, ChevronLeft, Car, FileText, User, Shield } from "lucide-react";
 import { createSinistro, CreateSinistroDTO } from "../api/sinister";
@@ -210,38 +210,50 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    if (!validateStep(currentStep)) {
-      return;
+  e.preventDefault();
+  if (!validateStep(currentStep)) { 
+    return;
+  }
+
+  setIsSubmitting(true);
+
+  try {
+    const convertedData = convertToEnglishValues();
+    await createSinistro(convertedData);
+    resetForm();
+    onClose();
+    onSuccess();
+  } catch (err: any) {
+    onError(err.message || "Erro ao criar sinistro");
+  } finally {
+    setIsSubmitting(false);
+  }
+};
+
+
+const handleNextStep = () => {
+  const isCurrentStepValid = validateStep(currentStep);
+
+  if (isCurrentStepValid) {
+    const nextStepNumber = currentStep + 1;
+
+    if (nextStepNumber === 4) {
+      setFormErrors({});
     }
 
-    try {
-      setIsSubmitting(true);
-      
-      const convertedData = convertToEnglishValues();
-      await createSinistro(convertedData);
-      
-      resetForm();
-      onClose();
-      onSuccess();
-      
-    } catch (err: any) {
-      onError(err.message || "Erro ao criar sinistro");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+    setCurrentStep(nextStepNumber);
+  }
+};
 
-  const handleNextStep = () => {
-    if (validateStep(currentStep)) {
-      setCurrentStep(prev => prev + 1);
-    }
-  };
+const handlePreviousStep = () => {
+  setFormErrors({});
+  setCurrentStep(prev => prev - 1);
+};
 
-  const handlePreviousStep = () => {
-    setCurrentStep(prev => prev - 1);
-  };
+
+useEffect(() => {
+  setFormErrors({});
+}, [currentStep]);
 
   const renderStepIndicator = () => {
     const steps = [
@@ -653,6 +665,9 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
 
       case 4:
         return (
+          console.log("Renderizando passo 4"),
+          console.log("Dados do formulário:", formData),
+          console.log("Erros do formulário:", formErrors),
           <div className="space-y-4">
             <h3 className="text-lg font-semibold mb-4">Informações do Seguro</h3>
             
@@ -809,6 +824,7 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
           </div>
 
           <DialogFooter className="flex justify-between mt-8">
+
             <div className="flex gap-2">
               {currentStep > 1 && (
                 <button
@@ -821,7 +837,7 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
                 </button>
               )}
             </div>
-            
+
             <div className="flex gap-3">
               <button
                 type="button"
@@ -831,7 +847,7 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
               >
                 Cancelar
               </button>
-              
+
               {currentStep < 4 ? (
                 <button
                   type="button"
@@ -858,6 +874,7 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
                 </button>
               )}
             </div>
+
           </DialogFooter>
         </form>
       </DialogContent>
