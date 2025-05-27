@@ -32,9 +32,9 @@ export const Auth = () => {
   }
 
   return (
-    <div className="relative w-screen h-screen flex overflow-hidden">
+    <div className="relative w-screen h-screen flex flex-col lg:flex-row overflow-hidden">
       {/* Lado esquerdo fixo com fundo e decoração */}
-      <div className="w-3/5 bg-[linear-gradient(to_bottom,_#0575E6_0%,_#02298A_85%,_#021B79_100%)] relative flex flex-col items-start justify-center pl-40 overflow-hidden z-10">
+      <div className="w-full lg:w-3/5 h-1/4 lg:h-full bg-[linear-gradient(to_bottom,_#0575E6_0%,_#02298A_85%,_#021B79_100%)] relative flex flex-col items-center lg:items-start justify-center px-6 lg:pl-40 overflow-hidden z-10">
         <svg
           className="absolute bottom-0 left-0 w-[150%] h-[150%] translate-y-1/4 pointer-events-none"
           viewBox="0 0 800 600"
@@ -45,14 +45,15 @@ export const Auth = () => {
           <path d="M -200 600 Q 400 150 1000 800" stroke="#00AFFF20" strokeWidth="1" />
         </svg>
 
-        <div className="text-white z-20">
-          <div className="mb-8">
-            <img src="../RegulaAI.png" className="h-22" />
+        <div className="text-white z-20 text-center lg:text-left">
+          <div className="mb-4 lg:mb-8">
+            <img src="../RegulaAI.png" className="h-16 lg:h-22 mx-auto lg:mx-0" />
           </div>
-          <p className="mb-8 text-xl whitespace-nowrap">
+          <p className="hidden lg:block mb-8 text-xl whitespace-nowrap">
             Simplificando a regulação por meio de Inteligência Artificial
           </p>
-          <button className="bg-[#0575E6] text-white py-3 px-10 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
+          <button 
+            className="hidden lg:block bg-[#0575E6] text-white py-3 px-10 text-lg font-medium hover:bg-blue-600 transition duration-300 cursor-pointer rounded-sm"
             onClick={handleSaibaMais}
           >
             Saiba mais
@@ -71,12 +72,12 @@ export const Auth = () => {
         className="absolute top-4 left-4 text-white hover:text-gray-300 z-30 cursor-pointer"
         onClick={handleBack}
       >
-        <CaretDoubleLeft size={50} />
+        <CaretDoubleLeft size={40} className="lg:w-[50px] lg:h-[50px]" />
       </button>
 
       {/* Lado direito dinâmico */}
-      <div className="w-2/5 flex items-center justify-center z-20">
-        <div className="w-4/5 max-w-md">
+      <div className="w-full lg:w-2/5 h-3/4 lg:h-full flex items-start pt-8 lg:items-center justify-center z-20 px-6 lg:px-0">
+        <div className="w-full max-w-sm lg:w-4/5 lg:max-w-md">
           <Routes>
             <Route path="select" element={<SelectLogin />} />
             <Route path="admin" element={<AdminLogin />} />

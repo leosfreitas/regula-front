@@ -14,7 +14,6 @@ export const Dashboard = () => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const location = useLocation();
 
-    // Fechamento automático do menu mobile quando a rota muda
     useEffect(() => {
         if (isMobileMenuOpen) {
             setIsMobileMenuOpen(false);
@@ -25,7 +24,6 @@ export const Dashboard = () => {
         setIsMobileMenuOpen(!isMobileMenuOpen);
     };
 
-    // Fecha o menu quando clica fora dele (em telas mobile)
     const handleContentClick = () => {
         if (isMobileMenuOpen && window.innerWidth <= 768) {
             setIsMobileMenuOpen(false);
@@ -34,7 +32,6 @@ export const Dashboard = () => {
 
     return (
         <>
-            {/* Overlay para telas mobile quando o menu está aberto */}
             {isMobileMenuOpen && window.innerWidth <= 768 && (
                 <Overlay onClick={() => setIsMobileMenuOpen(false)} />
             )}
@@ -83,7 +80,7 @@ const MainContent = styled.div`
 const ContentArea = styled.main`
     padding: 25px;
     overflow-y: auto;
-    height: calc(100vh - 80px); /* 80px é a altura do Header */
+    height: calc(100vh - 80px);
     
     @media (max-width: 768px) {
         padding: 16px;
