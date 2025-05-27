@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useLayoutEffect, useRef } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogOverlay } from "@/components/ui/dialog";
 import { Info, ChevronRight, ChevronLeft, Car, FileText, User, Shield } from "lucide-react";
 import { createSinistro, CreateSinistroDTO } from "../api/sinister";
@@ -94,6 +94,15 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
     setFormErrors({});
   };
 
+  const prevStepRef = useRef(currentStep);
+
+  useLayoutEffect(() => {
+    if (prevStepRef.current !== currentStep) {
+      setFormErrors({});
+      prevStepRef.current = currentStep;
+    }
+  }, [currentStep]);
+
   const handleClose = () => {
     resetForm();
     onClose();
@@ -106,7 +115,7 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
   };
 
   const validateStep = (step: number): boolean => {
-    const errors: {[key: string]: string} = {};
+    const errors: Record<string, string> = {};
 
     switch (step) {
       case 1:
@@ -231,30 +240,27 @@ export const CreateSinistroDialog = ({ isOpen, onClose, onSuccess, onError }: Cr
 };
 
 
-const handleNextStep = () => {
-  const isCurrentStepValid = validateStep(currentStep);
-
-  if (isCurrentStepValid) {
-    const nextStepNumber = currentStep + 1;
-
-    if (nextStepNumber === 4) {
-      setFormErrors({});
+  const handleNextStep = () => {
+    if (validateStep(currentStep)) {
+      setShowErrors(false);          // <- limpa visual dos erros
+      setCurrentStep(prev => prev + 1);
+    } else {
+      setShowErrors(true);           // <- mostra erros deste passo
     }
+  };
 
-    setCurrentStep(nextStepNumber);
-  }
-};
+  const handlePreviousStep = () => {
+    setShowErrors(false);            // <- sempre limpa ao voltar
+    setCurrentStep(prev => prev - 1);
+  };
 
-const handlePreviousStep = () => {
-  setFormErrors({});
-  setCurrentStep(prev => prev - 1);
-};
-
-
-useEffect(() => {
-  setFormErrors({});
-}, [currentStep]);
-
+  useEffect(() => {
+    setFormErrors({});
+  }, [currentStep]);
+  
+  
+  const [showErrors, setShowErrors] = useState(false);
+  
   const renderStepIndicator = () => {
     const steps = [
       { number: 1, title: "Acidente", icon: <FileText className="w-6 h-6" /> },
@@ -312,14 +318,14 @@ useEffect(() => {
                   value={formData.accident_area}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.accident_area ? 'border-red-500' : ''
+                    formErrors.accident_area && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
                   <option value="Urbana">Urbana</option>
                   <option value="Rural">Rural</option>
                 </select>
-                {formErrors.accident_area && (
+                {formErrors.accident_area && showErrors && (
                   <p className="text-red-500 text-xs mt-1">{formErrors.accident_area}</p>
                 )}
               </div>
@@ -336,14 +342,14 @@ useEffect(() => {
                   value={formData.fault}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.fault ? 'border-red-500' : ''
+                    formErrors.fault && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
                   <option value="Titular da Apólice">Titular da Apólice</option>
                   <option value="Terceiros">Terceiros</option>
                 </select>
-                {formErrors.fault && (
+                {formErrors.fault && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.fault}</p>
                 )}
               </div>
@@ -360,14 +366,14 @@ useEffect(() => {
                   value={formData.police_report_filed}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.police_report_filed ? 'border-red-500' : ''
+                    formErrors.police_report_filed && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
                 </select>
-                {formErrors.police_report_filed && (
+                {formErrors.police_report_filed && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.police_report_filed}</p>
                 )}
               </div>
@@ -384,14 +390,14 @@ useEffect(() => {
                   value={formData.witness_present}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.witness_present ? 'border-red-500' : ''
+                    formErrors.witness_present && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
                   <option value="Sim">Sim</option>
                   <option value="Não">Não</option>
                 </select>
-                {formErrors.witness_present && (
+                {formErrors.witness_present && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.witness_present}</p>
                 )}
               </div>
@@ -408,14 +414,14 @@ useEffect(() => {
                   value={formData.agent_type}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.agent_type ? 'border-red-500' : ''
+                    formErrors.agent_type && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
                   <option value="Externo">Externo</option>
                   <option value="Interno">Interno</option>
                 </select>
-                {formErrors.agent_type && (
+                {formErrors.agent_type && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.agent_type}</p>
                 )}
               </div>
@@ -443,10 +449,10 @@ useEffect(() => {
                   onChange={handleInputChange}
                   placeholder="Ex: Honda, Toyota, Ford"
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.make ? 'border-red-500' : ''
+                    formErrors.make && showErrors ? 'border-red-500' : ''
                   }`}
                 />
-                {formErrors.make && (
+                {formErrors.make && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.make}</p>
                 )}
               </div>
@@ -463,7 +469,7 @@ useEffect(() => {
                   value={formData.vehicle_category}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.vehicle_category ? 'border-red-500' : ''
+                    formErrors.vehicle_category && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -471,7 +477,7 @@ useEffect(() => {
                   <option value="Sport">Sport</option>
                   <option value="Utility">Utility</option>
                 </select>
-                {formErrors.vehicle_category && (
+                {formErrors.vehicle_category && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.vehicle_category}</p>
                 )}
               </div>
@@ -488,7 +494,7 @@ useEffect(() => {
                   value={formData.vehicle_price_br}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.vehicle_price_br ? 'border-red-500' : ''
+                    formErrors.vehicle_price_br && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -499,7 +505,7 @@ useEffect(() => {
                   <option value="300000 a 345000">R$ 300.000 a R$ 345.000</option>
                   <option value="mais de 345000">Mais de R$ 345.000</option>
                 </select>
-                {formErrors.vehicle_price_br && (
+                {formErrors.vehicle_price_br && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.vehicle_price_br}</p>
                 )}
               </div>
@@ -516,7 +522,7 @@ useEffect(() => {
                   value={formData.age_of_vehicle}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.age_of_vehicle ? 'border-red-500' : ''
+                    formErrors.age_of_vehicle && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -529,7 +535,7 @@ useEffect(() => {
                   <option value="7 anos">7 anos</option>
                   <option value="mais de 7 anos">Mais de 7 anos</option>
                 </select>
-                {formErrors.age_of_vehicle && (
+                {formErrors.age_of_vehicle && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.age_of_vehicle}</p>
                 )}
               </div>
@@ -549,10 +555,10 @@ useEffect(() => {
                   min="1"
                   max="3"
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.number_of_cars ? 'border-red-500' : ''
+                    formErrors.number_of_cars && showErrors ? 'border-red-500' : ''
                   }`}
                 />
-                {formErrors.number_of_cars && (
+                {formErrors.number_of_cars && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.number_of_cars}</p>
                 )}
               </div>
@@ -578,14 +584,14 @@ useEffect(() => {
                   value={formData.sex}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.sex ? 'border-red-500' : ''
+                    formErrors.sex && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
                   <option value="Masculino">Masculino</option>
                   <option value="Feminino">Feminino</option>
                 </select>
-                {formErrors.sex && (
+                {formErrors.sex && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.sex}</p>
                 )}
               </div>
@@ -604,10 +610,10 @@ useEffect(() => {
                   onChange={handleInputChange}
                   min="17"
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.age ? 'border-red-500' : ''
+                    formErrors.age && showErrors ? 'border-red-500' : ''
                   }`}
                 />
-                {formErrors.age && (
+                {formErrors.age && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.age}</p>
                 )}
               </div>
@@ -624,7 +630,7 @@ useEffect(() => {
                   value={formData.marital_status}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.marital_status ? 'border-red-500' : ''
+                    formErrors.marital_status && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -633,7 +639,7 @@ useEffect(() => {
                   <option value="Viúvo(a)">Viúvo(a)</option>
                   <option value="Divorciado(a)">Divorciado(a)</option>
                 </select>
-                {formErrors.marital_status && (
+                {formErrors.marital_status && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.marital_status}</p>
                 )}
               </div>
@@ -652,10 +658,10 @@ useEffect(() => {
                   onChange={handleInputChange}
                   min="17"
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.age_of_policy_holder ? 'border-red-500' : ''
+                    formErrors.age_of_policy_holder && showErrors ? 'border-red-500' : ''
                   }`}
                 />
-                {formErrors.age_of_policy_holder && (
+                {formErrors.age_of_policy_holder && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.age_of_policy_holder}</p>
                 )}
               </div>
@@ -681,7 +687,7 @@ useEffect(() => {
                   value={formData.base_policy}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.base_policy ? 'border-red-500' : ''
+                    formErrors.base_policy && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -689,7 +695,7 @@ useEffect(() => {
                   <option value="Colisão">Colisão</option>
                   <option value="Todos os Riscos">Todos os Riscos</option>
                 </select>
-                {formErrors.base_policy && (
+                {formErrors.base_policy && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.base_policy}</p>
                 )}
               </div>
@@ -706,7 +712,7 @@ useEffect(() => {
                   value={formData.policy_type}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.policy_type ? 'border-red-500' : ''
+                    formErrors.policy_type && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -717,7 +723,7 @@ useEffect(() => {
                   <option value="Utility - All Perils">Utility - All Perils</option>
                   <option value="Utility - Collision">Utility - Collision</option>
                 </select>
-                {formErrors.policy_type && (
+                {formErrors.policy_type && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.policy_type}</p>
                 )}
               </div>
@@ -736,10 +742,10 @@ useEffect(() => {
                   onChange={handleInputChange}
                   placeholder="Ex: 1500, 2000, 3000"
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.deductible_br ? 'border-red-500' : ''
+                    formErrors.deductible_br && showErrors ? 'border-red-500' : ''
                   }`}
                 />
-                {formErrors.deductible_br && (
+                {formErrors.deductible_br && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.deductible_br}</p>
                 )}
               </div>
@@ -756,7 +762,7 @@ useEffect(() => {
                   value={formData.days_policy_accident}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.days_policy_accident ? 'border-red-500' : ''
+                    formErrors.days_policy_accident && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -766,7 +772,7 @@ useEffect(() => {
                   <option value="15 a 30 dias">15 a 30 dias</option>
                   <option value="Mais de 30 dias">Mais de 30 dias</option>
                 </select>
-                {formErrors.days_policy_accident && (
+                {formErrors.days_policy_accident && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.days_policy_accident}</p>
                 )}
               </div>
@@ -783,7 +789,7 @@ useEffect(() => {
                   value={formData.days_policy_claim}
                   onChange={handleInputChange}
                   className={`shadow border rounded w-full py-2 px-3 text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                    formErrors.days_policy_claim ? 'border-red-500' : ''
+                    formErrors.days_policy_claim && showErrors ? 'border-red-500' : ''
                   }`}
                 >
                   <option value="">Selecione...</option>
@@ -793,7 +799,7 @@ useEffect(() => {
                   <option value="15 a 30 dias">15 a 30 dias</option>
                   <option value="Mais de 30 dias">Mais de 30 dias</option>
                 </select>
-                {formErrors.days_policy_claim && (
+                {formErrors.days_policy_claim && showErrors&&  (
                   <p className="text-red-500 text-xs mt-1">{formErrors.days_policy_claim}</p>
                 )}
               </div>
@@ -856,9 +862,18 @@ useEffect(() => {
                 </button>
               ) : (
                 <button
-                  type="submit"
-                  className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded cursor-pointer"
-                  disabled={isSubmitting}
+                type="submit"
+                className="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded cursor-pointer"
+                onClick={(e) => {
+                  if (!validateStep(4)) {          // valida passo 4
+                    e.preventDefault();            // não deixa enviar
+                    setShowErrors(true);           // mostra erros
+                    return;
+                  }
+                  setShowErrors(false);            // ok, pode enviar
+                  handleSubmit(e);
+                }}
+                disabled={isSubmitting}
                 >
                   {isSubmitting ? (
                     <div className="flex items-center">
@@ -869,6 +884,7 @@ useEffect(() => {
                     "Registrar Sinistro"
                   )}
                 </button>
+
               )}
             </div>
 
